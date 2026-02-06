@@ -1,17 +1,20 @@
 <!-- 
 My Experience:
-Initally using the screen reader, I noticed I am unable to navigate to the any of the main content. 
-By hitting tab, I was only able to navigate to the nav, audio element, and the related section.
-This makes sense given that the HTML written in the code has no semantic structure.
+I had difficulty figuring out how to use the screen reader at first. I didn't know I was supposed to be entering sections using
+the control-option-shift up and down arrows and then navigating within those sections using the left and right arrows.
+Among other many issues, one issue that the screen reader brought to my attention is that the images didn't have alt-text.
+Furthermore, there were times where the screen reader read "empty section" too.
 
-Starting on adding semantic strucutre, I started by aligning the headers correctly. Currently, the code
-doesn't use any headers which is a big issue. It's using these "font size" tags and setting css
-to those. Instead, I swapped those over to be the approprate h1, h2, and h3 tags.
+I also noticed that some parts of the page were harder to navigate because the content wasn’t structured clearly with
+proper paragraphs and headings. The show/hide comments control was not reachable using only the keyboard at first,
+and some form fields were confusing because the labels were not clearly associated with the inputs.
+
+The table was also difficult to understand since the screen reader did not give enough context for each cell until
+headers were added, and the audio player had no transcript, so its content wasn’t accessible without hearing it.
 -->
 
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
 
@@ -30,7 +33,7 @@ to those. Instead, I swapped those over to be the approprate h1, h2, and h3 tags
       <h1>Welcome to our wildlife website</h1>
     </div>
 
-    <div class="nav">
+    <nav>
       <ul>
         <li><a href="#">Home</a></li>
         <li><a href="#">Our team</a></li>
@@ -39,41 +42,45 @@ to those. Instead, I swapped those over to be the approprate h1, h2, and h3 tags
       </ul>
 
       <form class="search">
-        <input type="search" name="q" placeholder="Search query">
+        <input type="search" name="q" aria-label="Search across site content" placeholder="Search query">
         <input type="submit" value="Go!">
       </form>
-    </div>
+    </nav>
 
     <main>
       <article>
         <h2>The trouble with Bears</h2>
-        <br><br>
-        By Evan Wild
-        <br><br>
-        Tall, lumbering, angry, dangerous. The real live bears of this world are proud, independent creatures, self-serving and always on the hunt for food. Nothing like the bears you see on TV, like Baloo from renowned documentary, The Jungle Book.
-        <br><br>
-        So what are bears really like, and why does the world's media portray them with such a skewed vision? In this article we try to answer those questions, and give you a real insight into the life of the bear.
-        <br><br>
-        <h3>Types of bear<h3>
-        <br><br>
-        Bears come in two varieties — large and medium. You don't get small bears. If you have seen a small bear, then it was in fact probably a baby bear (cub) from another species.
-        <br><br>
-        Bears can also be classified in terms of their habitat — both large and medium bears are just as at home in urban areas as they are in the countryside. Different habitats encourange different behaviour however, as you'll find out below. The below table also gives you some useful facts about bears.
-        <br><br>
+        <p>
+          By Evan Wild
+        </p>
+        <p>
+          Tall, lumbering, angry, dangerous. The real live bears of this world are proud, independent creatures, self-serving and always on the hunt for food. Nothing like the bears you see on TV, like Baloo from renowned documentary, The Jungle Book.
+        </p>
+        <p>
+          So what are bears really like, and why does the world's media portray them with such a skewed vision? In this article we try to answer those questions, and give you a real insight into the life of the bear.
+        </p>
+        <h3>Types of bear</h3>
+        <p>
+          Bears come in two varieties — large and medium. You don't get small bears. If you have seen a small bear, then it was in fact probably a baby bear (cub) from another species.
+        </p>
+        <p>
+          Bears can also be classified in terms of their habitat — both large and medium bears are just as at home in urban areas as they are in the countryside. Different habitats encourange different behaviour however, as you'll find out below. The below table also gives you some useful facts about bears.
+        </p>
         <table>
+          <caption>Facts about wild vs. urban bears: coat, size, habitat, lifespan, and diet.</caption>
           <thead>
             <tr>
-              <td>Bear Type</td>
-              <td>Coat</td>
-              <td>Adult size</td>
-              <td>Habitat</td>
-              <td>Lifespan</td>
-              <td>Diet</td>
+              <th scope="col">Bear Type</th>
+              <th scope="col">Coat</th>
+              <th scope="col">Adult size</th>
+              <th scope="col">Habitat</th>
+              <th scope="col">Lifespan</th>
+              <th scope="col">Diet</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Wild</td>
+              <th scope="row">Wild</th>
               <td>Brown or black</td>
               <td>1.4 to 2.8 meters</td>
               <td>Woods and forests</td>
@@ -81,7 +88,7 @@ to those. Instead, I swapped those over to be the approprate h1, h2, and h3 tags
               <td>Fish, meat, plants</td>
             </tr>
             <tr>
-              <td>Urban</td>
+              <th scope="row">Urban</th>
               <td>North Face</td>
               <td>18 to 22</td>
               <td>Condos and coffee shops</td>
@@ -91,41 +98,53 @@ to those. Instead, I swapped those over to be the approprate h1, h2, and h3 tags
           </tbody>
         </table>
 
-        <font size="5">Habitats and Eating habits</font>
-        <br><br>
-        Wild bears eat a variety of meat, fish, fruit, nuts, and other natually growing ingredients. In general they will hunt for food themselves in woodland or rivers, but at a push they will track down their sustenance from farms or country houses. They tend to live in relative isolation, in caves, tents, or cottages.
-        <br><br>
-        <img src="media/wild-bear.jpg">
-        <br><br>
-        Urban (gentrified) bears on the other hand have largely abandoned the old ways. They will hunt other urban creatures if necessary (including other predators like rats and foxes), but prefer to scavenge from readily available urban food outlets like dumpsters, bins, and fast food joints. When food has proven scarce, urban bears have even been known to break into people's kitchens and steal essentials like baked beans, ready meals, and microwave ovens.
-        <br><br>
-        <img src="media/urban-bear.jpg">
-        <br><br>
-        Urban bears will sleep anywhere they can, from bus shelters and parks, to the toilets in McDonalds, to their own apartment.
-        <br><br>
-        <font size="5">Mating rituals</font>
-        <br><br>
-        Bears are romantic creatures by nature, and will naturally look for a mate that they can spend the rest of their lives with. They will woo a potential suitor by making their dwelling look attractive — for example with cave paintings or a bed of reeds in the case of a wild bear, and mood lighting and a Michael Bublé CD in the case of an urban bear.
-        <br><br>
-        The following audio clip contains a fact file providing more details about bear mating rituals, along with samples and quotes from experts.
-        <br><br>
+        <h3>Habitats and Eating habits</h3>
+        <p>
+          Wild bears eat a variety of meat, fish, fruit, nuts, and other natually growing ingredients. In general they will hunt for food themselves in woodland or rivers, but at a push they will track down their sustenance from farms or country houses. They tend to live in relative isolation, in caves, tents, or cottages.
+        </p>
+        <img src="media/wild-bear.jpg" alt="A wild bear in a stream">
+        <p>
+          Urban (gentrified) bears on the other hand have largely abandoned the old ways. They will hunt other urban creatures if necessary (including other predators like rats and foxes), but prefer to scavenge from readily available urban food outlets like dumpsters, bins, and fast food joints. When food has proven scarce, urban bears have even been known to break into people's kitchens and steal essentials like baked beans, ready meals, and microwave ovens.
+        </p>
+        <img src="media/urban-bear.jpg" alt="An urban bear in a city setting">
+        <p>
+          Urban bears will sleep anywhere they can, from bus shelters and parks, to the toilets in McDonalds, to their own apartment.
+        </p>
+        <h3>Mating rituals</h3>
+        <p>
+          Bears are romantic creatures by nature, and will naturally look for a mate that they can spend the rest of their lives with. They will woo a potential suitor by making their dwelling look attractive — for example with cave paintings or a bed of reeds in the case of a wild bear, and mood lighting and a Michael Bublé CD in the case of an urban bear.
+        </p>
+        <p>
+          The following audio clip contains a fact file providing more details about bear mating rituals, along with samples and quotes from experts.
+        </p>
         <audio controls>
           <source src="media/bear.mp3" type="audio/mp3">
           <source src="media/bear.ogg" type="audio/ogg">
-          <p>It looks like your browser doesn't support HTML5 audio players.</p>
+          <p>
+            It looks like your browser doesn't support HTML5 audio players.
+            You can <a href="media/bear.mp3">download the audio file here</a>.
+          </p>
         </audio>
 
+        <details>
+          <summary>Transcript</summary>
+          <p>This isn't really an audio file about bears. But it is one that you can transcribe.</p>
+        </details>
+
+
+
         <aside>
-
-          <font size="5">About the author</font>
-        <br><br>
-          Evan Wild is an unemployed plumber from Doncaster, who has been really "in to" wildlife since childhood. He once went to Chester Zoo on holiday, but got ill after eating a doner kebab.
-        <br><br>
-          He has never seen a bear, but once read a Daily Mail article about them, and thinks they sound cool.
-
+        <h3>About the author</h3>
+          <p>
+            Evan Wild is an unemployed plumber from Doncaster, who has been really "in to" wildlife since childhood. He once went to Chester Zoo on holiday, but got ill after eating a doner kebab.
+          </p>
+          <p>
+            He has never seen a bear, but once read a Daily Mail article about them, and thinks they sound cool.
+          </p>
         </aside>
+
         <section class="comments">
-          <div class="show-hide">Show comments</div>
+          <button class="show-hide">Show comments</button>
 
           <div class="comment-wrapper">
 
@@ -133,11 +152,11 @@ to those. Instead, I swapped those over to be the approprate h1, h2, and h3 tags
 
             <form class="comment-form">
               <div class="flex-pair">
-                Your name:
+                <label for="name">Your name:</label>
                 <input type="text" name="name" id="name" placeholder="Enter your name">
               </div>
               <div class="flex-pair">
-                Your comment:
+                <label for="comment">Your comment:</label>
                 <input type="text" name="comment" id="comment" placeholder="Enter your comment">
               </div>
               <div>
@@ -145,27 +164,23 @@ to those. Instead, I swapped those over to be the approprate h1, h2, and h3 tags
               </div>
             </form>
 
-            <font size="6">Comments</font>
+            <h3>Comments</h3>
 
             <ul class="comment-container">
 
               <li>
-
                 <p>Bob Fossil</p>
-
-                <p>Oh I am so glad you taught me all about the big brown angry guys in the woods. With their sniffing little noses and their bad attitudes, they can sure be a menace — I was thinking of putting them all in a truck and driving them outta here. I run a zoo, you know.</p>
-
+                <p>
+                  Oh I am so glad you taught me all about the big brown angry guys in the woods. With their sniffing little noses and their bad attitudes, they can sure be a menace — I was thinking of putting them all in a truck and driving them outta here. I run a zoo, you know.
+                </p>
               </li>
-
             </ul>
-
           </div>
         </section>
       </article>
 
       <div class="secondary">
-        <font size="6">Related</font>
-
+        <h3>Related</h3>
         <ul>
           <li><a href="#">The trouble with Bees</a></li>
           <li><a href="#">The trouble with Otters</a></li>
@@ -177,7 +192,9 @@ to those. Instead, I swapped those over to be the approprate h1, h2, and h3 tags
     </main>
 
     <footer>
-      <p>©Copyright 2050 by nobody. All rights reversed.</p>
+      <p>
+        ©Copyright 2050 by nobody. All rights reversed.
+      </p>
     </footer>
 
     <script src="main.js"></script>
