@@ -1,0 +1,67 @@
+/* Whole Page */
+body {
+  font: 1.2em / 1.5 sans-serif;
+}
+
+/* Flexbox 1 */
+.flexbox1 ul {
+  max-width: 750px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.flexbox1 a:link,
+.flexbox1 a:visited {
+  background-color: #4d7298;
+  border: 2px solid #77a6b6;
+  border-radius: 0.5em;
+  color: white;
+  padding: 0.5em;
+  display: inline-block;
+  text-decoration: none;
+}
+
+/* Flexbox 2 */
+.flexbox2 ul {
+  max-width: 750px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.flexbox2 li {
+  background-color: #4d7298;
+  border: 2px solid #77a6b6;
+  border-radius: 0.5em;
+  color: white;
+  padding: 0.5em;
+  flex: 1;
+}
+
+.flexbox2 li:first-child {
+  flex: 2;
+}
+
+/* Flexbox 3 */
+.flexbox3 ul {
+  max-width: 450px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flexbox3 li {
+  background-color: #4d7298;
+  border: 2px solid #77a6b6;
+  border-radius: 0.5em;
+  color: white;
+  padding: 0.5em;
+  margin: 0.5em;
+  flex: auto;
+}
