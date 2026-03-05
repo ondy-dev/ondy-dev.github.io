@@ -1,4 +1,5 @@
 @media screen and (min-width: 60em) {
+
   header {
     display: flex;
     align-items: center;
@@ -7,6 +8,11 @@
 
   header ul {
     display: flex;
+    gap: 20px;
+  }
+
+  header nav {
+    margin-left: auto;
   }
 
   header li {
@@ -37,4 +43,5 @@
   .cards li {
     margin-bottom: 0;
   }
+
 }
