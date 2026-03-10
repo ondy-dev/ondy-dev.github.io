@@ -30,7 +30,7 @@ img {
 a {
   color: #5d3fd3;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 a:hover,
@@ -78,13 +78,13 @@ p {
 }
 
 h1 {
-  font-size: 2.5rem;
-  line-height: 1.05;
+  font-size: 2rem;
+  line-height: 1.1;
   margin-bottom: 1.25rem;
 }
 
 h2 {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   margin-bottom: 1rem;
 }
 
@@ -112,7 +112,7 @@ footer {
 }
 
 section {
-  padding: 4.5rem 0;
+  padding: 3rem 0;
   border-bottom: 1px solid #e7ddcf;
 }
 
@@ -129,6 +129,7 @@ section {
 /* Header / Nav */
 header {
   padding: 1.5rem 0;
+  text-align: center;
 }
 
 .site-title p {
@@ -137,8 +138,15 @@ header {
   font-size: 1.05rem;
 }
 
+nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 nav li {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0;
 }
 
 nav a {
@@ -147,20 +155,30 @@ nav a {
 
 /* Hero Section */
 .hero {
-  padding-top: 3rem;
+  padding-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  text-align: center;
+  align-items: center;
 }
 
 .hero-text {
   min-width: 0;
+  order: 2;
 }
 
 .hero-text p {
   max-width: 65ch;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .hero-image {
-  margin-top: 2rem;
+  order: 1;
   min-width: 0;
+  max-width: 300px;
+  width: 100%;
 }
 
 .hero-image img {
@@ -173,6 +191,14 @@ nav a {
 /* Content Sections */
 .section-heading {
   margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.section-intro {
+  max-width: 60ch;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .card {
@@ -188,7 +214,7 @@ nav a {
 /* Thumbnail Rows */
 .thumbnail-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 0.75rem;
   margin-top: 1rem;
   width: 100%;
@@ -202,6 +228,64 @@ nav a {
   object-fit: cover;
   border-radius: 10px;
   border: 1px solid #e7ddcf;
+}
+
+.single-thumbnail {
+  grid-template-columns: 1fr;
+  margin-top: 0;
+}
+
+/* Homepage Cards */
+.home-links {
+  padding-top: 0;
+}
+
+.home-card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.home-card {
+  padding: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-card:hover,
+.home-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+}
+
+.home-card-link {
+  display: block;
+  color: inherit;
+}
+
+.home-card-link:hover,
+.home-card-link:focus {
+  color: inherit;
+}
+
+.home-card-text {
+  padding: 1.25rem 1.25rem 1.5rem;
+  text-align: center;
+}
+
+.home-card-text h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.6rem;
+  color: #111111;
+}
+
+.home-card-text p {
+  color: #3a342d;
+}
+
+.card-cta {
+  margin-bottom: 0;
+  font-weight: 700;
+  color: #5d3fd3;
 }
 
 /* Expandable Examples */
@@ -290,11 +374,14 @@ nav a {
 
 /* Footer */
 footer {
-  padding: 4rem 0;
+  padding: 3rem 0;
+  text-align: center;
 }
 
 footer > p {
   max-width: 60ch;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 address {
@@ -312,6 +399,7 @@ address p {
     justify-content: space-between;
     align-items: center;
     gap: 2rem;
+    text-align: left;
   }
 
   .site-title p {
@@ -319,13 +407,8 @@ address p {
   }
 
   nav ul {
-    display: flex;
+    flex-direction: row;
     gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  nav li {
-    margin-bottom: 0;
   }
 
   .hero {
@@ -333,22 +416,61 @@ address p {
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
     gap: 2.5rem;
     align-items: center;
+    text-align: left;
+  }
+
+  .hero-text {
+    order: 1;
+  }
+
+  .hero-text p {
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .hero-image {
-    margin-top: 0;
+    order: 2;
+    max-width: none;
   }
 
-  .section-content {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  .section-heading {
+    text-align: left;
+  }
+
+  .section-intro {
+    margin-left: 0;
+    margin-right: 0;
+    text-align: left;
+  }
+
+  .home-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .home-card-text {
+    text-align: left;
   }
 
   .thumbnail-row {
     grid-template-columns: 1fr 1fr;
   }
 
+  .single-thumbnail {
+    grid-template-columns: 1fr;
+  }
+
   .music-embeds {
     grid-template-columns: 1fr;
+  }
+
+  footer {
+    text-align: left;
+  }
+
+  footer > p {
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
@@ -364,5 +486,9 @@ address p {
 
   section {
     padding: 5.5rem 0;
+  }
+
+  .home-card-text h3 {
+    font-size: 1.6rem;
   }
 }
