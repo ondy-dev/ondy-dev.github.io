@@ -155,7 +155,6 @@ p {
 }
 
 /* Layout */
-header,
 main,
 footer {
   width: 90%;
@@ -180,7 +179,14 @@ section {
 
 /* Header / Nav */
 header {
-  padding: 1.5rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background-color: #f6f1e8;
+  border-bottom: 1px solid #e7ddcf;
+  padding: 1.5rem max(5%, calc((100% - 1200px) / 2));
+  box-sizing: border-box;
   text-align: center;
 }
 
@@ -605,6 +611,14 @@ address p {
   overflow: hidden;
   border-radius: 8px;
   background-color: #e7ddcf;
+  aspect-ratio: 1;
+  position: relative;
+}
+
+.gallery-item a {
+  position: absolute;
+  inset: 0;
+  cursor: zoom-in;
 }
 
 .gallery-item img {
@@ -617,6 +631,36 @@ address p {
 
 .gallery-item:hover img {
   transform: scale(1.02);
+}
+
+/* Lightbox */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox:target {
+  display: flex;
+}
+
+.lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  cursor: zoom-out;
+}
+
+.lightbox img {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 6px;
+  pointer-events: none;
 }
 
 /* Tablet and Up */
