@@ -315,6 +315,7 @@ nav a {
 .home-card {
   padding: 0;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
 }
 
 .home-card:hover,
@@ -324,7 +325,9 @@ nav a {
 }
 
 .home-card-link {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   color: inherit;
 }
 
@@ -334,8 +337,15 @@ nav a {
 }
 
 .home-card-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   padding: 1.25rem 1.25rem 1.5rem;
   text-align: center;
+}
+
+.home-card-text p:not(.card-cta) {
+  flex: 1;
 }
 
 .home-card-text h3 {
@@ -450,6 +460,13 @@ footer > p {
   margin-right: auto;
 }
 
+.footer-copyright {
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  color: #888;
+}
+
 address {
   font-style: normal;
 }
@@ -511,7 +528,7 @@ address p {
 
   .home-card-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: start;
+    align-items: stretch;
   }
 
   .home-card-text {
