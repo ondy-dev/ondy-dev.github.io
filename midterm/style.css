@@ -185,30 +185,89 @@ header {
   width: 100%;
   background-color: #f6f1e8;
   border-bottom: 1px solid #e7ddcf;
-  padding: 1.5rem max(5%, calc((100% - 1200px) / 2));
+  padding: 1rem max(5%, calc((100% - 1200px) / 2));
   box-sizing: border-box;
-  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .site-title p {
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   font-weight: bold;
   font-size: 1.05rem;
 }
 
+nav {
+  flex-basis: 100%;
+  order: 3;
+}
+
 nav ul {
-  display: flex;
+  display: none;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0;
+  width: 100%;
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+  border-top: 1px solid #e7ddcf;
   align-items: center;
 }
 
 nav li {
   margin-bottom: 0;
+  width: 100%;
+  text-align: center;
 }
 
 nav a {
   font-weight: 600;
+  display: block;
+  padding: 0.5rem 0;
+}
+
+/* Nav Toggle (Hamburger) */
+.nav-toggle {
+  display: none;
+}
+
+.nav-toggle-label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 6px 4px;
+}
+
+.nav-toggle-label span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background-color: #222222;
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.nav-toggle:checked ~ nav ul {
+  display: flex;
+}
+
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* PDF Button row */
+.btn-row {
+  text-align: center;
 }
 
 /* Hero Section */
@@ -484,20 +543,43 @@ address p {
 /* Tablet and Up */
 @media screen and (min-width: 700px) {
   header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-wrap: nowrap;
     gap: 2rem;
-    text-align: left;
+    padding: 1.5rem max(5%, calc((100% - 1200px) / 2));
   }
 
-  .site-title p {
-    margin-bottom: 0;
+  .nav-toggle-label {
+    display: none;
+  }
+
+  nav {
+    flex-basis: auto;
+    order: 0;
   }
 
   nav ul {
+    display: flex;
     flex-direction: row;
     gap: 1rem;
+    width: auto;
+    padding: 0;
+    border-top: none;
+    margin-top: 0;
+    align-items: center;
+  }
+
+  nav li {
+    width: auto;
+    text-align: left;
+  }
+
+  nav a {
+    display: inline;
+    padding: 0;
+  }
+
+  .btn-row {
+    text-align: left;
   }
 
   .hero {
