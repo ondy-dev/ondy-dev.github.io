@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ICA 11 – Silly Story Generator | Andy Tran</title>
+  <link rel="stylesheet" href="ica11.css" />
+</head>
+<body>
+  <main>
+    <h1>Plants vs. Zombies Story Generator</h1>
+    <p>Enter a custom name to replace Bob, pick your locale, and generate a random backyard battle story.</p>
+
+    <div class="card">
+      <div class="story-controls">
+        <div class="form-group">
+          <label for="custom-name">Enter custom name:</label>
+          <input id="custom-name" type="text" placeholder="e.g. Sunflower" />
+        </div>
+
+        <fieldset>
+          <legend>Choose locale:</legend>
+          <div class="radio-group">
+            <label><input id="us" type="radio" name="uk-us" value="us" checked /> US</label>
+            <label><input id="uk" type="radio" name="uk-us" value="uk" /> UK</label>
+          </div>
+        </fieldset>
+
+        <button class="btn generate">Generate random story</button>
+      </div>
+
+      <p class="story"></p>
+    </div>
+  </main>
+
+  <script src="ica11.js"></script>
+</body>
+</html>
