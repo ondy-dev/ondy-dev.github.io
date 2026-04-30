@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scream to Control Volume | Andy Tran</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="site-title">
+      <p><a href="../midterm/index.html">Andy Tran</a></p>
+    </div>
+    <p class="header-label">Final Project: Hostile UI</p>
+  </header>
+
+  <main id="main-content">
+    <section class="intro-section">
+      <h1>Scream to Control Volume</h1>
+      <p class="subtitle">The World's Worst Volume Control Interaction</p>
+      <p class="description">
+        Normal volume sliders are silent, discreet, and instant. This one is none of those things.
+        You control the volume by making sustained noise into your microphone. The louder you are,
+        the higher the volume. Stop making noise, and it resets. Ideal for libraries, quiet offices,
+        and any other place where you'd rather not cause a scene.
+      </p>
+
+      <div id="start-screen" class="start-screen">
+        <p class="status-hint">Grant microphone access below to begin your suffering.</p>
+        <button class="btn" id="start-btn">Enable Microphone</button>
+        <p class="mic-note">Your microphone audio is never recorded or sent anywhere. All processing happens locally in your browser.</p>
+      </div>
+    </section>
+
+    <section id="control-panel" class="control-panel hidden" aria-label="Volume control panel">
+
+      <!-- Mode toggle -->
+      <div class="mode-toggle" role="group" aria-label="Volume control mode">
+        <button class="btn btn-mode active" id="mode-fillbar">Fill Bar Mode</button>
+        <button class="btn btn-mode" id="mode-hold">3-Second Hold Mode</button>
+      </div>
+
+      <!-- Hold sub-toggle (only visible in Hold Mode) -->
+      <div class="hold-sub-toggle hidden" id="hold-sub-toggle" role="group" aria-label="Hold mode type">
+        <span class="sub-toggle-label">Measure by:</span>
+        <button class="btn btn-sub active" id="sub-loudness">Loudness</button>
+        <button class="btn btn-sub" id="sub-pitch">Pitch</button>
+      </div>
+
+      <p class="mode-desc" id="mode-description">
+        Scream continuously. Volume follows your noise in real time. Stop, and it drops back down.
+      </p>
+
+      <!-- Volume display -->
+      <div class="volume-section">
+        <div class="volume-label">Output Volume</div>
+        <div class="volume-number" id="volume-number" aria-live="polite" aria-label="Current volume">0</div>
+        <div class="volume-bar-container" aria-hidden="true">
+          <div class="volume-bar" id="volume-bar"></div>
+          <div class="volume-scale">
+            <span>100</span>
+            <span>75</span>
+            <span>50</span>
+            <span>25</span>
+            <span>0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pitch display (only visible in pitch mode) -->
+      <div class="pitch-display hidden" id="pitch-display" aria-live="polite">
+        <span class="pitch-note" id="pitch-note">-</span>
+        <span class="pitch-freq" id="pitch-freq"></span>
+      </div>
+
+      <!-- Mic input level -->
+      <div class="mic-section">
+        <div class="mic-label-row">
+          <span class="mic-label">Mic Input Level</span>
+          <span class="mic-threshold-label" id="threshold-label">hold threshold: 15%</span>
+        </div>
+        <div class="mic-bar-container" aria-hidden="true">
+          <div class="mic-bar" id="mic-bar"></div>
+          <div class="mic-threshold-marker" id="mic-threshold-marker"></div>
+        </div>
+        <div class="sensitivity-row">
+          <label class="mic-label" for="sensitivity-slider">Sensitivity</label>
+          <input type="range" id="sensitivity-slider" min="1" max="10" value="5" step="1" />
+          <span id="sensitivity-value">5</span>
+        </div>
+      </div>
+
+      <!-- Hold mode progress (hidden until actively holding) -->
+      <div class="hold-progress hidden" id="hold-progress" aria-live="polite">
+        <div class="hold-label">Hold steady... <span id="hold-countdown">3.0</span>s remaining</div>
+        <div class="hold-bar-container">
+          <div class="hold-bar" id="hold-bar"></div>
+        </div>
+      </div>
+
+      <!-- Status text -->
+      <p class="status-text" id="status-text" aria-live="polite">Make noise to control volume.</p>
+
+    </section>
+  </main>
+
+  <footer>
+    <p>Final Project: <em>Hostile UI Interaction Design</em></p>
+    <p class="footer-copyright">&copy; Andy Tran</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
