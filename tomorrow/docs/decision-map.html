@@ -1,0 +1,799 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tomorrow Decision Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* One reading column; wide tables scroll inside their own box. Dark-first, like the game's terminal. */
+  :root {
+    --bg: #0f0f0e; --fg: #dad6cd; --dim: #8a867c; --rule: #34322e; --panel: #171716;
+    --learn: #7cc3b6; --fix: #e2a95e; --need: #b8a6e0; --end: #a9a49a; --out: #e58f8f;
+    --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f5f3ee; --fg: #1f1e1b; --dim: #6c685f; --rule: #d9d5cc; --panel: #ecebe5;
+      --learn: #1d7f72; --fix: #a9641a; --need: #5d47a3; --end: #5c5850; --out: #b23b3b; color-scheme: light;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f5f3ee; --fg: #1f1e1b; --dim: #6c685f; --rule: #d9d5cc; --panel: #ecebe5;
+    --learn: #1d7f72; --fix: #a9641a; --need: #5d47a3; --end: #5c5850; --out: #b23b3b; color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+  main { max-width: 1040px; margin: 0 auto; padding-block: 40px 80px; padding-inline: 16px; }
+  h1, h2, h3 { font-family: var(--font-mono); font-weight: 500; line-height: 1.25; text-wrap: balance; }
+  h1 { font-size: 1.6rem; letter-spacing: 0.08em; margin: 0 0 0.3em; }
+  h2 { font-size: 1.15rem; margin: 2.6em 0 0.6em; padding-top: 0.8em; border-top: 1px dashed var(--rule); }
+  h3 { font-size: 0.98rem; margin: 1.8em 0 0.5em; }
+  p { max-width: 70ch; margin: 0 0 1em; }
+  a { color: inherit; text-decoration-color: var(--dim); }
+  code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
+  code { background: var(--panel); padding: 0.05em 0.35em; border-radius: 3px; }
+  .lede { color: var(--dim); font-family: var(--font-mono); font-size: 0.9rem; }
+  .stats { display: flex; flex-wrap: wrap; gap: 0.4em 1.6em; font-family: var(--font-mono); font-size: 0.85rem; color: var(--dim); margin: 1em 0 1.6em; font-variant-numeric: tabular-nums; }
+  .stats b { color: var(--fg); font-weight: 500; }
+  nav { display: flex; flex-wrap: wrap; gap: 0.3em 1.2em; font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 1.4em; }
+  .legend .item { display: inline-flex; gap: 0.4em; align-items: baseline; }
+  .legend { display: flex; flex-wrap: wrap; gap: 0.5em 1.2em; align-items: center; font-size: 0.82rem; color: var(--dim); margin: 0 0 1.2em; }
+  .chip { display: inline-block; font-family: var(--font-mono); font-size: 0.74rem; padding: 0.05em 0.45em; border: 1px solid currentColor; border-radius: 3px; white-space: nowrap; margin: 0.1em 0; }
+  .chip.learn { color: var(--learn); }
+  .chip.fix { color: var(--fix); background: color-mix(in srgb, var(--fix) 14%, transparent); }
+  .chip.need { color: var(--need); }
+  .chip.end { color: var(--end); border-style: dashed; }
+  .chip.free { color: var(--dim); }
+  .chip.out { color: var(--out); background: color-mix(in srgb, var(--out) 14%, transparent); }
+  .steps { padding-left: 1.6em; max-width: 78ch; }
+  .steps li { margin-bottom: 0.45em; }
+  .steps li::marker { font-family: var(--font-mono); color: var(--dim); }
+  table { border-collapse: collapse; width: 100%; font-size: 0.84rem; margin: 0.4em 0 1em; }
+  .scroll { overflow-x: auto; }
+  th, td { text-align: left; vertical-align: top; padding: 0.45em 0.6em; border-bottom: 1px solid var(--rule); }
+  th { font-family: var(--font-mono); font-weight: 500; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--dim); }
+  td.num { font-family: var(--font-mono); color: var(--dim); font-variant-numeric: tabular-nums; }
+  td.words, dd.words { font-family: var(--font-mono); font-size: 0.78rem; color: var(--dim); }
+  .line { font-size: 0.86rem; margin-top: 0.2em; }
+  .line.night { color: var(--dim); font-style: italic; }
+  .tag { font-family: var(--font-mono); font-size: 0.75rem; color: var(--need); }
+  .dim { color: var(--dim); }
+  .small { font-size: 0.8rem; }
+  .moment, .branch { border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); padding: 0.2em 1em 0.6em; margin: 1em 0; overflow-x: auto; }
+  .moment h3, .branch h3 { margin-top: 0.8em; }
+  .idx { display: inline-block; min-width: 1.6em; color: var(--dim); }
+  .from { font-size: 0.85rem; color: var(--dim); margin-bottom: 0.4em; }
+  dl.facts { display: grid; grid-template-columns: 9.5em 1fr; gap: 0.3em 1em; margin: 0.4em 0 0.8em; font-size: 0.88rem; }
+  dl.facts dt { font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--dim); padding-top: 0.15em; }
+  dl.facts dd { margin: 0; min-width: 0; }
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1em; }
+  .card { border: 1px solid var(--rule); border-radius: 6px; padding: 0.2em 1em 0.4em; background: var(--panel); }
+  @media (max-width: 560px) { dl.facts { grid-template-columns: 1fr; } dl.facts dt { padding-top: 0.6em; } }
+</style>
+
+<main>
+  <h1>TOMORROW · DECISION MAP</h1>
+  <p class="lede">every moment, action, case and knowledge check, generated from game/story.js</p>
+  <div class="stats">
+    <span><b>7</b> moments</span>
+    <span><b>25</b> branches</span>
+    <span><b>37</b> cases</span>
+    <span><b>6</b> fixes, 3 needed</span>
+    <span><b>20</b> facts</span>
+    <span><b>2</b> endings</span>
+  </div>
+  <nav>
+    <a href="#rules">how it decides</a><a href="#endings">endings</a><a href="#day">the day</a>
+    <a href="#branches">branches</a><a href="#facts">facts</a><a href="#words">words</a>
+  </nav>
+  <div class="legend"><span class="item"><span class="chip need">needs</span> a fact Nell must know for this case</span><span class="item"><span class="chip learn">learns</span> a fact this case teaches</span><span class="item"><span class="chip fix">fix</span> counts toward the way out</span><span class="item"><span class="chip end">ends the day</span> the night, then 7:14 again</span><span class="item"><span class="chip free">free</span> the moment stays open</span><span class="item"><span class="chip out">way out</span> ends the loop</span></div>
+  <section id="rules">
+  <h2>How the game decides</h2>
+  <p>Every time the player presses ENTER, the game checks these in order and stops at the first that fits.</p>
+  <ol class="steps">
+    <li><b>RESTART</b>, anywhere: the restart menu. <i>Back to the first Tuesday</i> erases what Nell learned and keeps the endings found and the colors. <i>Erase everything</i> also erases those and asks how you feel again.</li>
+    <li><b>Answers that work anywhere</b> (<code>STORY.anywhere</code>): <code>unsafe</code>, <code>stop</code>, <code>tired</code>. Safety first, in every mode, even at night.</li>
+    <li><b>HELP, LOOK, THINK, inventory</b>: free. THINK lists every fact Nell knows.</li>
+    <li><b>ENTER on an empty line</b>: the moment happens the way it happened (its <code>letItHappen</code>), and the day moves on. An ENTER within 0.7s of a new page is ignored.</li>
+    <li><b>Only punctuation or emoji</b>: not understood.</li>
+    <li><b>Day one</b>: nothing can change. The game repeats back what was meant (“You mean to…”), then the moment happens anyway.</li>
+    <li><b>Find the action</b>: the moment's own <code>words</code> first, then the global <code>words</code>, top to bottom. The first match wins.</li>
+    <li><b>What Nell actually did</b> (<code>nothing</code>, or a change marked “let it happen”): the moment happens.</li>
+    <li><b>“look at …” / “look around”</b>: always free. The moment's reply for that thing, or LOOK.</li>
+    <li><b>Hiding on the second Tuesday</b>: warned once (“Last Tuesday you didn’t”). The second try hides.</li>
+    <li><b>A change</b>: the branch. Its first case whose <code>needs</code> Nell knows plays. See below.</li>
+    <li><b>A free reply</b>: the moment's own, then the global <code>replies</code>. The moment stays open.</li>
+    <li><b>An action from another moment</b>: “Not yet.” (or “She isn’t here. Not yet.” for Maya) if it comes later, “That moment’s already gone.” if it came earlier.</li>
+    <li><b>Anything else</b>: one of the three misses, and from the second miss on, a hint.</li>
+  </ol>
+
+  <h3>When a change plays</h3>
+  <ol class="steps">
+    <li>The first case whose <code>needs</code> are all known is chosen.</li>
+    <li>If that case is a fix and this scene was already used for a fix (<code>scene</code> lets text and tower count as one), it's a <b>repeat</b>: “Why does it sound like you practiced that?” and the night says to try something else. Nothing is learned.</li>
+    <li>Otherwise its text plays and its facts are learned. If that completes <code>sketch</code>, or <code>photo</code> + <code>august</code>, Nell admits her feelings (learns <code>feelings</code>).</li>
+    <li>No <code>night</code>: it was a reply, and the moment stays open.</li>
+    <li>On the second Tuesday: “And just like that, it’s a different day.” The next morning remembers how far she got, if it was the street or later.</li>
+    <li><code>wayOut</code>: the loop ends here (watching the bus go, on a ready day). Otherwise the fix is recorded and the night begins.</li>
+  </ol>
+
+  <h3>When every moment is let happen</h3>
+  <table>
+    <thead><tr><th>When</th><th>Checks</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>Day one</td><td>always</td><td>The first night. Tomorrow will be different.</td></tr>
+      <tr><td>The second Tuesday</td><td>nothing was learned today</td><td><span class="chip out">Without Knowing</span> The night, a Wednesday where only “get up” goes on, then ten years later.</td></tr>
+      <tr><td>Any later day</td><td>ready: 3 of 6 fixes and <code>why_secret</code></td><td><span class="chip out">Knowing</span> The day is told honestly (only what Nell found out), the last night, Wednesday, “get up”.</td></tr>
+      <tr><td>Not ready</td><td>no facts at all</td><td>You can’t let go of something you’ve never once picked up.</td></tr>
+      <tr><td>Not ready</td><td>facts, but no fix</td><td>But you already started pulling at the thread. You can’t stop halfway and call it letting go.</td></tr>
+      <tr><td>Not ready</td><td>fewer than 3 fixes</td><td>But at every one of them, you stopped and looked. There are still things you haven’t said to her. You can feel the shape of them in your mouth.</td></tr>
+      <tr><td>Not ready</td><td>3+ fixes, no <code>why_secret</code></td><td>But you still don’t know <em>why</em>. She’s up there every afternoon. You’ve never once asked.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>How honestly each moment is told</h3>
+  <p>Each moment has a <code>truth</code> fact. Lines tagged <code>[felt]</code> show before Nell knows it (reality warps), <code>[heal]</code> after she knows it, and <code>[clear]</code> on the honest last day, once the way out is open. <code>[day two]</code> lines (the pushes to change something) show only on the second Tuesday.</p>
+  </section>
+  <section id="endings">
+  <h2>The two endings</h2>
+  <div class="two">
+    <div class="card">
+      <h3>Knowing</h3>
+      <p><b>Opens:</b> 3 different fixes out of <span class="chip fix">peace</span> <span class="chip fix">keep</span> <span class="chip fix">confess</span> <span class="chip fix">sorry</span> <span class="chip fix">station</span> <span class="chip fix">permission</span>, and <span class="chip need">why_secret</span>. The night it opens: “Something about the dark feels different tonight. Thinner.”</p>
+      <p><b>Then:</b> let all seven moments happen, told honestly. Or, on a ready day, watch the bus go from the tower at 8:40.</p>
+      <p><b>Ends:</b> the last night, Wednesday, “get up”. Some people let go the very next day, without ever finding out.</p>
+    </div>
+    <div class="card">
+      <h3>Without Knowing</h3>
+      <p><b>Opens:</b> only on the second Tuesday, and only if nothing is learned that day.</p>
+      <p><b>Then:</b> resist every push to change something, and let all seven moments happen.</p>
+      <p><b>Ends:</b> “You close your eyes, and for the first time in two days, you don’t ask for another Tuesday.” Wednesday, “get up”, then ten years later at Dot’s.</p>
+    </div>
+  </div>
+  <p class="dim">The endings found are counted in the bar at the top and survive RESTART.</p>
+  </section>
+  <section id="day">
+    <h2>The day, moment by moment</h2>
+    <p>One change per day. Everything listed under <b>Free here</b> answers without using up the day, and so does any “look at …”.</p>
+    <section class="moment" id="m-wake">
+    <h3><span class="idx">1</span> TUESDAY 7:14 AM <span class="dim">· wake</span></h3>
+    <dl class="facts">
+      <dt>Truth</dt><dd><span class="chip need">read</span> decides felt / heal / clear</dd>
+      <dt>ENTER</dt><dd><div class="line"><span class="tag">[day two]</span> “You don’t touch the phone. You get up the way you got up.”</div></dd>
+      <dt>Typing what she did</dt><dd>“Later. First the kitchen.”</dd>
+      <dt>Day one</dt><dd>“But it’s Tuesday, and Tuesday already knows how it goes.”</dd>
+      <dt>Second Tuesday</dt><dd><div class="line">“You don’t touch the phone. You get up the way you got up.”</div></dd>
+      <dt>Free here</dt><dd class="words">ceiling, stain · hook, jacket · time · window · radio · cry · phone · photos, photo, corkboard, strip, strips · tower · highway · text theo</dd>
+    </dl>
+    <table class="changes">
+      <thead><tr><th>Action</th><th>Words that trigger it (this moment's first)</th><th>Goes to</th></tr></thead>
+      <tbody><tr><td class="mono">phone</td><td class="words">phone · messages · message · texts · scroll · read</td><td><a href="#b-phone">phone</a></td></tr><tr><td class="mono">text</td><td class="words">text · reply · message her</td><td><a href="#b-text">text</a></td></tr><tr><td class="mono">photos</td><td class="words">photo · photos · corkboard · board · picture · pictures · strip</td><td><a href="#b-photos">photos</a></td></tr><tr><td class="mono">remember</td><td class="words">remember · think back · think about · memory · memories · reminisce</td><td><a href="#b-remember">remember</a></td></tr><tr><td class="mono">hide</td><td class="words">stay in bed · stay home · sleep · back to bed · hide · blanket · lie in bed · close my eyes · lie here · lie still · stay put · dont get up …</td><td><a href="#b-hide">hide</a></td></tr><tr><td class="mono">house</td><td class="words">mayas · her house · her room · reyes · mrs · search</td><td><a href="#b-house">house</a></td></tr><tr><td class="mono">tower</td><td class="words">tower · climb · go up · go there · find her · find maya · see her · see maya</td><td><a href="#b-tower">tower</a></td></tr><tr><td class="mono">talk</td><td class="words">talk · ask · say · speak · tell · why · maya · her</td><td><a href="#b-tower">tower</a></td></tr><tr><td class="mono">mom</td><td class="words">mom · mother · lourdes · kitchen · pharmacy</td><td><a href="#b-mom">mom</a></td></tr><tr><td class="mono">breathe</td><td class="words">breathe · breath · calm · relax · soup</td><td><a href="#b-breathe">breathe</a></td></tr><tr><td class="mono">theo</td><td class="words">theo · diner · dot · dots</td><td><span class="dim">what Nell did: the moment happens</span></td></tr></tbody>
+    </table>
+  </section><section class="moment" id="m-kitchen">
+    <h3><span class="idx">2</span> kitchen <span class="dim">· kitchen</span></h3>
+    <dl class="facts">
+      <dt>Truth</dt><dd><span class="chip need">mom</span> decides felt / heal / clear</dd>
+      <dt>ENTER</dt><dd><div class="line"><span class="tag">[day two]</span> “You don’t ask. Keeping your mouth shut feels like holding a door closed with your whole body.”</div><div class="line"><span class="tag">[first time]</span> “She kisses the top of your head on the way out. She doesn’t usually do that.”</div><div class="line"><span class="tag">[replay]</span> “She kisses the top of your head on the way out.”</div></dd>
+      <dt>Typing what she did</dt><dd>“You eat. She goes.”</dd>
+      <dt>Day one</dt><dd>““Mom—” It comes out too quiet. She doesn’t turn around.”</dd>
+      <dt>Second Tuesday</dt><dd><div class="line">“You could ask. One question. <em>Mom, what did Lourdes say?</em>”</div><div class="line">“You don’t ask. Keeping your mouth shut feels like holding a door closed with your whole body.”</div></dd>
+      <dt>Free here</dt><dd class="words">look at mom · radio · fridge · toast · listen · comfort</dd>
+    </dl>
+    <table class="changes">
+      <thead><tr><th>Action</th><th>Words that trigger it (this moment's first)</th><th>Goes to</th></tr></thead>
+      <tbody><tr><td class="mono">mom</td><td class="words">stop her · follow · stay</td><td><a href="#b-mom">mom</a></td></tr><tr><td class="mono">talk</td><td class="words">talk · ask · say · speak · tell · why · maya · her</td><td><a href="#b-mom">mom</a></td></tr><tr><td class="mono">screen</td><td class="words">finish her sentence · finish the sentence · who arent what · arent what · im gay · im a lesbian · i like girls · im queer</td><td><a href="#b-screen-door">screen door</a></td></tr><tr><td class="mono">theo</td><td class="words">theo · diner · dot · dots</td><td><span class="dim">what Nell did: the moment happens</span></td></tr></tbody>
+    </table>
+  </section><section class="moment" id="m-diner">
+    <h3><span class="idx">3</span> TUESDAY 11:40 AM <span class="dim">· diner</span></h3>
+    <dl class="facts">
+      <dt>Truth</dt><dd><span class="chip need">nobody_laughed</span> decides felt / heal / clear</dd>
+      <dt>ENTER</dt><dd><div class="line"><span class="tag">[day two]</span> “You don’t look. You let it be everybody. You let it be laughing.”</div><div class="line"><span class="tag">[felt, heal, not day two]</span> “You’re outside. You don’t remember standing up.”</div><div class="line"><span class="tag">[day two]</span> “You stand up. This time you feel your legs do it.”</div><div class="line"><span class="tag">[clear]</span> “You get up and leave. You remember standing up, this time.”</div></dd>
+      
+      <dt>Day one</dt><dd>“You try. Your body has already decided.”</dd>
+      <dt>Second Tuesday</dt><dd><div class="line">“You knew he was going to say it. You knew somebody would laugh. You could breathe. You could turn around and look.”</div><div class="line">“You don’t look. You let it be everybody. You let it be laughing.”</div><div class="line">“You’re outside. You don’t remember standing up.”</div><div class="line">“You stand up. This time you feel your legs do it.”</div></dd>
+      <dt>Free here</dt><dd class="words">counter · tv · look at theo · pie · order · cry · punch</dd>
+    </dl>
+    <table class="changes">
+      <thead><tr><th>Action</th><th>Words that trigger it (this moment's first)</th><th>Goes to</th></tr></thead>
+      <tbody><tr><td class="mono">breathe</td><td class="words">breathe · breath · calm · relax · soup</td><td><a href="#b-breathe">breathe</a></td></tr><tr><td class="mono">hold</td><td class="words">hold my breath · hold breath · hold your breath</td><td><a href="#b-hold">hold</a></td></tr><tr><td class="mono">kind</td><td class="words">not your fault · its okay</td><td><a href="#b-kind">kind</a></td></tr><tr><td class="mono">turn</td><td class="words">turn around · whats so funny · who laughed · laughed · laughing · laugh · confront · yell · throw</td><td><a href="#b-turn">turn</a></td></tr><tr><td class="mono">theo</td><td class="words">booth · listen · stay · dont leave · bus</td><td><a href="#b-theo">theo</a></td></tr><tr><td class="mono">talk</td><td class="words">talk · ask · say · speak · tell · why · maya · her</td><td><a href="#b-theo">theo</a></td></tr></tbody>
+    </table>
+  </section><section class="moment" id="m-street">
+    <h3><span class="idx">4</span> TUESDAY 3:15 PM <span class="dim">· street</span></h3>
+    <dl class="facts">
+      <dt>Truth</dt><dd><span class="chip need">tried_to_tell</span> decides felt / heal / clear</dd>
+      <dt>ENTER</dt><dd><div class="line"><span class="tag">[felt, heal]</span> “You don’t go.”</div><div class="line"><span class="tag">[clear]</span> “You don’t go. You let yourself not go.”</div><div class="line"><span class="tag">[day two]</span> “You keep walking. Every step away from the tower, you can feel yourself choosing it.”</div></dd>
+      <dt>Typing what she did</dt><dd>“You keep walking.”</dd>
+      <dt>Day one</dt><dd>“You think about it so hard it’s almost the same as going. It isn’t.”</dd>
+      <dt>Second Tuesday</dt><dd><div class="line">“It’s five minutes to the tower. You could be up the ladder before you’d decided to go.”</div><div class="line">“You keep walking. Every step away from the tower, you can feel yourself choosing it.”</div></dd>
+      <dt>Free here</dt><dd class="words">dollar general · letters, look up · sign · cry</dd>
+    </dl>
+    <table class="changes">
+      <thead><tr><th>Action</th><th>Words that trigger it (this moment's first)</th><th>Goes to</th></tr></thead>
+      <tbody><tr><td class="mono">tower</td><td class="words">=up · =go · maya · her · climb · tower</td><td><a href="#b-tower">tower</a></td></tr><tr><td class="mono">text</td><td class="words">text · reply · answer · message her</td><td><a href="#b-tower">tower</a></td></tr></tbody>
+    </table>
+  </section><section class="moment" id="m-driveway">
+    <h3><span class="idx">5</span> TUESDAY 6:30 PM <span class="dim">· driveway</span></h3>
+    <dl class="facts">
+      <dt>Truth</dt><dd><span class="chip need">why_secret</span> decides felt / heal / clear</dd>
+      <dt>ENTER</dt><dd><span class="dim">the moment happens</span></dd>
+      <dt>Typing what she did</dt><dd>“It comes out the way it came out.”</dd>
+      <dt>Day one</dt><dd>“What comes out is something else.”</dd>
+      <dt>Second Tuesday</dt><dd><div class="line">“You know exactly what you’re about to say. You’ve heard it every hour since. You could say anything else. <em>Stay. I’m sorry. I—</em> Anything.”</div></dd>
+      <dt>Free here</dt><dd class="words">box · look at her, look at maya · trunk · cry · jacket · silence · askif · accuse · photo · mrs · out</dd>
+    </dl>
+    <table class="changes">
+      <thead><tr><th>Action</th><th>Words that trigger it (this moment's first)</th><th>Goes to</th></tr></thead>
+      <tbody><tr><td class="mono">confess</td><td class="words">love · confess · kiss · feelings · how i feel · i like her · crush · tell her everything</td><td><a href="#b-confess">confess</a></td></tr><tr><td class="mono">stay</td><td class="words">dont let · dont go · dont leave · stay · stayed · staying · stop her · keep her · beg</td><td><a href="#b-stay">stay</a></td></tr><tr><td class="mono">goodbye</td><td class="words">happy for · proud of · congratulations · good luck · luck · its okay · miss her · miss you</td><td><a href="#b-goodbye">goodbye</a></td></tr><tr><td class="mono">sorry</td><td class="words">sorry · apologize · apologise · make it right · make up</td><td><a href="#b-goodbye">goodbye</a></td></tr><tr><td class="mono">loop</td><td class="words">lived today · live today · living today · time loop · loop · same day · tuesday again · relive · reliving</td><td><a href="#b-loop">loop</a></td></tr><tr><td class="mono">go</td><td class="words">you should go · i want you to go · you have to go · you should leave</td><td><a href="#b-go">go</a></td></tr><tr><td class="mono">jacketBack</td><td class="words">jacket back · give me my jacket · have my jacket · want my jacket · ask for my jacket · ask for the jacket · take my jacket · return my jacket</td><td><a href="#b-jacket">jacket</a></td></tr><tr><td class="mono">talk</td><td class="words">chicago</td><td><a href="#b-say-what">say what</a></td></tr><tr><td class="mono">original</td><td class="words">tell her to go · then go · go then · fine · everybody knew · yell · scream · confront · angry</td><td><span class="dim">what Nell did: the moment happens</span></td></tr></tbody>
+    </table>
+  </section><section class="moment" id="m-porch">
+    <h3><span class="idx">6</span> porch <span class="dim">· porch</span></h3>
+    <dl class="facts">
+      <dt>Truth</dt><dd><span class="dim">none: told the same way</span></dd>
+      <dt>ENTER</dt><dd><div class="line"><span class="tag">[clear]</span> “You let it be what it was.”</div><div class="line"><span class="tag">[clear]</span> “And some small part of you — mean, or kind, you honestly can’t tell — meant it the other way too. <em>Go.</em> Get out of here. One of us should.”</div><div class="line"><span class="tag">[clear]</span> “You don’t knock. You didn’t, then.”</div><div class="line"><span class="tag">[day two]</span> “You put your hand down. You let it be the night it was.”</div><div class="line">“You stand there until the porch light clicks off.”</div></dd>
+      <dt>Typing what she did</dt><dd>“You lift your hand. You put it down.”</dd>
+      <dt>Day one</dt><dd>“You lift your hand. You put it down.”</dd>
+      <dt>Second Tuesday</dt><dd><div class="line">“It comes out exactly the same. You feel every word of it leave.”</div><div class="line">“Knock. Just knock. Your hand is already up.”</div><div class="line">“You put your hand down. You let it be the night it was.”</div></dd>
+      <dt>Free here</dt><dd class="words">window · porch light · cry · whisper · shout · ditch · text</dd>
+    </dl>
+    <table class="changes">
+      <thead><tr><th>Action</th><th>Words that trigger it (this moment's first)</th><th>Goes to</th></tr></thead>
+      <tbody><tr><td class="mono">knock</td><td class="words">call out · call her name</td><td><a href="#b-knock">knock</a></td></tr><tr><td class="mono">sorry</td><td class="words">sorry · apologize · apologise · make it right · make up</td><td><a href="#b-knock">knock</a></td></tr><tr><td class="mono">talk</td><td class="words">talk · ask · say · speak · tell · why · maya · her</td><td><a href="#b-knock">knock</a></td></tr></tbody>
+    </table>
+  </section><section class="moment" id="m-home">
+    <h3><span class="idx">7</span> TUESDAY 8:40 PM <span class="dim">· home</span></h3>
+    <dl class="facts">
+      <dt>Truth</dt><dd><span class="dim">none: told the same way</span></dd>
+      <dt>ENTER</dt><dd><div class="line"><span class="tag">[day two]</span> “You don’t run. You lie there and listen to the last chance in the day pull away.”</div><div class="line">“At 8:52 you hear it go.”</div></dd>
+      <dt>Typing what she did</dt><dd>“You could. You don’t.”</dd>
+      <dt>Day one</dt><dd>“You sit up. You lie back down.”</dd>
+      <dt>Second Tuesday</dt><dd><div class="line">“Eight minutes. You could run. You’ve made that bus a hundred times in your head since last night.”</div><div class="line">“You don’t run. You lie there and listen to the last chance in the day pull away.”</div></dd>
+      <dt>Free here</dt><dd class="words">listen · ceiling · cry · text · awake</dd>
+    </dl>
+    <table class="changes">
+      <thead><tr><th>Action</th><th>Words that trigger it (this moment's first)</th><th>Goes to</th></tr></thead>
+      <tbody><tr><td class="mono">watch</td><td class="words">watch it go · watch the bus · watch it leave · watch her go · watch it from · climb the tower · the tower · from the tower</td><td><a href="#b-watch">watch</a></td></tr><tr><td class="mono">wave</td><td class="words">see her off · wave · say goodbye at the bus</td><td><a href="#b-wave">wave</a></td></tr><tr><td class="mono">bus</td><td class="words">=leave · =go · =run · =get up · run · get up and · car</td><td><a href="#b-bus">bus</a></td></tr><tr><td class="mono">knock</td><td class="words">knock · follow · door · go after · run after · go inside · go in · doorbell</td><td><a href="#b-bus">bus</a></td></tr><tr><td class="mono">talk</td><td class="words">talk · ask · say · speak · tell · why · maya · her</td><td><a href="#b-bus">bus</a></td></tr><tr><td class="mono">remember</td><td class="words">remember · think back · think about · memory · memories · reminisce</td><td><a href="#b-remember">remember</a></td></tr><tr><td class="mono">hide</td><td class="words">stay in bed · stay home · sleep · back to bed · hide · blanket · lie in bed · close my eyes · lie here · lie still · stay put · dont get up …</td><td><span class="dim">what Nell did: the moment happens</span></td></tr></tbody>
+    </table>
+  </section>
+  </section>
+  <section id="branches">
+  <h2>Every branch, case by case</h2>
+  <p>Cases are checked top to bottom. The first whose <b>needs</b> Nell knows is the one that plays.</p>
+  <div class="branch" id="b-phone">
+        <h3>phone</h3>
+        <p class="from">Reached from: wake <span class="dim">(phone)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="chip need">read</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip free">reply, stays open</span><div class="line">“Her message is still the last one in the thread.”</div></td>
+  </tr><tr>
+    <td class="num">2</td>
+    <td><span class="chip need">tried_to_tell</span></td>
+    <td><span class="chip learn">read</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“<em>She said she tried.</em> You can’t stop hearing Theo say it.”</div><div class="line night">night: “She tried. You didn’t let her.”</div></td>
+  </tr><tr>
+    <td class="num">3</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You pick up your phone and open the thread. The fish faces. The Ohio argument.”</div><div class="line night">night: “Something at the bottom of that thread you keep not reading.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-photos">
+        <h3>photos</h3>
+        <p class="from">Reached from: wake <span class="dim">(photos)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="chip learn">photo</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You don’t get up. You look at the corkboard over your desk instead. Photo-booth strips: you and Maya, you and Maya, you and Maya.”</div><div class="line night">night: “The fourth frame. You can still see it with your eyes closed.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-remember">
+        <h3>remember</h3>
+        <p class="from">Reached from: wake <span class="dim">(remember)</span>, home <span class="dim">(remember)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="chip learn">august</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You don’t get up. You lie there and remember on purpose.”</div><div class="line night">night: “You always remember the tower.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-hide">
+        <h3>hide</h3>
+        <p class="from">Reached from: wake <span class="dim">(hide)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You pull the blanket over your head.”</div><div class="line night">night: “At 8:52 you hear the bus through the blanket. It sounds exactly the same from under here.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-house">
+        <h3>house</h3>
+        <p class="from">Reached from: wake <span class="dim">(house)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="chip learn">reason</span> <span class="chip learn">sketch</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You skip the diner. You go to Maya’s house instead.”</div><div class="line night">night: “<em>I didn’t tell you because.</em>”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-mom">
+        <h3>mom</h3>
+        <p class="from">Reached from: wake <span class="dim">(mom)</span>, kitchen <span class="dim">(mom)</span>, kitchen <span class="dim">(talk)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="chip need">mom</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““You didn’t think I knew,” you say.”</div><div class="line night">night: “She does it too. Asks things sideways.”</div></td>
+  </tr><tr>
+    <td class="num">2</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="chip learn">mom</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You get to the kitchen before she can leave.”</div><div class="line night">night: “<em>Friends who aren’t—</em>”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-screen-door">
+        <h3>screen door</h3>
+        <p class="from">Reached from: kitchen <span class="dim">(screen)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="chip need">mom</span> <span class="chip need">feelings</span></td>
+    <td><span class="chip learn">out_loud</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““Mom.” She stops with her hand on the screen door.”</div><div class="line night">night: “She put her keys down.”</div></td>
+  </tr><tr>
+    <td class="num">2</td>
+    <td><span class="chip need">mom</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““Friends who aren’t what, Mom.””</div><div class="line night">night: “She didn’t finish it. Neither did you.”</div></td>
+  </tr><tr>
+    <td class="num">3</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip free">reply, stays open</span><div class="line">“The word comes around the corner. You cross the street.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-breathe">
+        <h3>breathe</h3>
+        <p class="from">Reached from: wake <span class="dim">(breathe)</span>, diner <span class="dim">(breathe)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="chip learn">nobody_laughed</span> <span class="chip learn">tried_to_tell</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You breathe in through your nose like you’re smelling soup. It’s a stupid technique. Mom swears by it.”</div><div class="line night">night: “Nobody was laughing. You keep turning that over.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-theo">
+        <h3>theo</h3>
+        <p class="from">Reached from: diner <span class="dim">(theo)</span>, diner <span class="dim">(talk)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="chip learn">nobody_laughed</span> <span class="chip learn">tried_to_tell</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You make yourself stay in the booth. You make yourself look at him.”</div><div class="line night">night: “Nobody was laughing. You keep turning that over.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-turn">
+        <h3>turn</h3>
+        <p class="from">Reached from: diner <span class="dim">(turn)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="chip learn">nobody_laughed</span> <span class="chip learn">tried_to_tell</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You turn around in the booth, ready to make somebody sorry.”</div><div class="line night">night: “There was nobody to yell at. There never was.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-hold">
+        <h3>hold</h3>
+        <p class="from">Reached from: diner <span class="dim">(hold)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="chip learn">nobody_laughed</span> <span class="chip learn">tried_to_tell</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You hold your breath. The diner gets loud, then far away, then very small.”</div><div class="line night">night: “Nobody was laughing. You keep turning that over.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-kind">
+        <h3>kind</h3>
+        <p class="from">Reached from: diner <span class="dim">(kind)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="chip learn">nobody_laughed</span> <span class="chip learn">tried_to_tell</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““Hey. It’s not your fault.””</div><div class="line night">night: “Nobody was laughing. You keep turning that over.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-say-what">
+        <h3>say what</h3>
+        <p class="from">Reached from: driveway <span class="dim">(talk)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip free">reply, stays open</span><div class="line">“You open your mouth. You don’t know which of the hundred things to say.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-tower">
+        <h3>tower</h3>
+        <p class="from">Reached from: wake <span class="dim">(tower)</span>, wake <span class="dim">(talk)</span>, street <span class="dim">(tower)</span>, street <span class="dim">(text)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="chip learn">reason</span> <span class="chip learn">why_secret</span> <span class="chip learn">tried_to_tell</span></td>
+    <td><span class="chip fix">peace</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You skip the diner. You skip all of it. At three you climb the water tower.”</div><div class="line night">night: “No fight. No <em>Fine. Then go.</em>”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-text">
+        <h3>text</h3>
+        <p class="from">Reached from: wake <span class="dim">(text)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="chip learn">read</span> <span class="chip learn">reason</span> <span class="chip learn">why_secret</span> <span class="chip learn">tried_to_tell</span></td>
+    <td><span class="chip fix">peace</span><div class="dim small">same scene as tower</div></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You type under her message, finally. It takes you four tries.”</div><div class="line night">night: “No fight. No <em>Fine. Then go.</em>”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-goodbye">
+        <h3>goodbye</h3>
+        <p class="from">Reached from: driveway <span class="dim">(goodbye)</span>, driveway <span class="dim">(sorry)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip fix">peace</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““I’m not mad,” you say. It’s almost true. “I’m sorry. I just wanted to say bye. Properly.””</div><div class="line night">night: “That was good. That was <em>so</em> good.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-stay">
+        <h3>stay</h3>
+        <p class="from">Reached from: driveway <span class="dim">(stay)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="chip need">reason</span> <span class="chip need">why_secret</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip fix">keep</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““Stay,” you say. “Please. Stay.””</div><div class="line night">night: “She stayed. You got what you wanted.”</div></td>
+  </tr><tr>
+    <td class="num">2</td>
+    <td><span class="chip need">reason</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““Stay,” you say. “Please.” It comes out like a bit. Like the Dollar General.”</div><div class="line night">night: “You asked like you were kidding, so it wouldn’t count if she said no.”</div></td>
+  </tr><tr>
+    <td class="num">3</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““Stay,” you say. “Please.””</div><div class="line night">night: “You don’t even know what she’s leaving <em>for</em>.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-confess">
+        <h3>confess</h3>
+        <p class="from">Reached from: driveway <span class="dim">(confess)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="chip need">feelings</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip fix">confess</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““I’m in love with you,” you say. “Since the tower. Since before the tower.””</div><div class="line night">night: “You touch your mouth like it might still be there.”</div></td>
+  </tr><tr>
+    <td class="num">2</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““Maya. I—””</div><div class="line night">night: “What were you going to say?”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-knock">
+        <h3>knock</h3>
+        <p class="from">Reached from: porch <span class="dim">(knock)</span>, porch <span class="dim">(sorry)</span>, porch <span class="dim">(talk)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip fix">sorry</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You knock.”</div><div class="line night">night: “You said sorry. She said she knew.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-bus">
+        <h3>bus</h3>
+        <p class="from">Reached from: home <span class="dim">(bus)</span>, home <span class="dim">(knock)</span>, home <span class="dim">(talk)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip fix">station</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You run.”</div><div class="line night">night: “You’re in your bed. You don’t remember getting off the bus. Your forty dollars is back in the drawer.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-jacket">
+        <h3>jacket</h3>
+        <p class="from">Reached from: driveway <span class="dim">(jacketBack)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="chip learn">march</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““Can I have my jacket back?””</div><div class="line night">night: “Since March.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-loop">
+        <h3>loop</h3>
+        <p class="from">Reached from: driveway <span class="dim">(loop)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="chip need">why_secret</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip fix">permission</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““I’ve lived today before,” you say. “A lot of times. I keep waking up on Tuesday.””</div><div class="line night">night: “She gave you her part back. She was so sure about it.”</div></td>
+  </tr><tr>
+    <td class="num">2</td>
+    <td><span class="chip need">tried_to_tell</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““I’ve lived today before,” you say. It comes out like a bit. Like the Dollar General.”</div><div class="line night">night: “You told her the truth like it was a joke. She’s heard that one from you before.”</div></td>
+  </tr><tr>
+    <td class="num">3</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip free">reply, stays open</span><div class="line">““I’ve lived today before.””</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-go">
+        <h3>go</h3>
+        <p class="from">Reached from: driveway <span class="dim">(go)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="chip need">why_secret</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip fix">peace</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">““You should go,” you say. Not like before. “Chicago. All of it.””</div><div class="line night">night: “<em>Then go.</em> The same two words.”</div></td>
+  </tr><tr>
+    <td class="num">2</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip free">reply, stays open</span><div class="line">““You should go.” It comes out too close to the other thing. She flinches.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-watch">
+        <h3>watch</h3>
+        <p class="from">Reached from: home <span class="dim">(watch)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="chip need">ready</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip out">way out: knowing</span><div class="line">“You don’t run. You go the other way, to the tower, and climb it in the dark.”</div><div class="line night">night: “You lie on top of the covers in your clothes.”</div></td>
+  </tr><tr>
+    <td class="num">2</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You don’t run. You go the other way, to the tower, and climb it in the dark.”</div><div class="line night">night: “Seeing it go didn’t finish anything.”</div></td>
+  </tr></tbody>
+  </table>
+      </div><div class="branch" id="b-wave">
+        <h3>wave</h3>
+        <p class="from">Reached from: home <span class="dim">(wave)</span></p>
+        <table class="cases">
+    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
+    <tbody><tr>
+    <td class="num">1</td>
+    <td><span class="dim">otherwise</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="dim">—</span></td>
+    <td><span class="chip end">ends the day</span><div class="line">“You run. The bus is already pulling out.”</div><div class="line night">night: “You waved at the back of a bus until it was just a light.”</div></td>
+  </tr></tbody>
+  </table>
+      </div>
+  </section>
+  <section id="facts">
+  <h2>Every fact: where it's learned, what checks it</h2>
+  <p>Knowledge is what survives the loop. <b>Needed by</b> means a branch case won't play without it. <b>Lines</b> are <code>[if …]</code> or <code>[if not …]</code> tags, which change what's said. The fixes count as facts too.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Fact</th><th>Learned by</th><th>Needed by</th><th>Changes these lines</th><th>THINK says</th></tr></thead>
+    <tbody><tr>
+        <td><span class="chip learn">reason</span></td>
+        <td>house (case 1)<br>tower (case 1)<br>text (case 1)</td>
+        <td>stay (case 1)<br>stay (case 2)</td>
+        <td class="small">2 lines in moments › freeReplies › askif</td>
+        <td class="small">An art school in Chicago is paying her to draw.</td>
+      </tr><tr>
+        <td><span class="chip learn">mom</span></td>
+        <td>mom (case 2)</td>
+        <td>mom (case 1)<br>screen door (case 1)<br>screen door (case 2)<div>truth of: kitchen</div></td>
+        <td class="small"><span class="dim">—</span></td>
+        <td class="small">Mom knew. Lourdes told her at the pharmacy. She tried to tell you sideways.</td>
+      </tr><tr>
+        <td><span class="chip learn">out_loud</span></td>
+        <td>screen door (case 1)</td>
+        <td><span class="dim">—</span></td>
+        <td class="small">1 line in endings › knowing › card</td>
+        <td class="small">You told Mom. Out loud, in the kitchen. She put her keys down.</td>
+      </tr><tr>
+        <td><span class="chip learn">nobody_laughed</span></td>
+        <td>breathe (case 1)<br>theo (case 1)<br>turn (case 1)<br>hold (case 1)<br>kind (case 1)</td>
+        <td><span class="dim">—</span><div>truth of: diner</div></td>
+        <td class="small">5 lines in moments › tell; branches › phone › text</td>
+        <td class="small">Nobody in the diner was laughing at you.</td>
+      </tr><tr>
+        <td><span class="chip learn">tried_to_tell</span></td>
+        <td>breathe (case 1)<br>theo (case 1)<br>turn (case 1)<br>hold (case 1)<br>kind (case 1)<br>tower (case 1)<br>text (case 1)</td>
+        <td>phone (case 2)<br>loop (case 2)<div>truth of: street</div></td>
+        <td class="small">15 lines in branches › remember › text; branches › breathe › text; branches › theo › text; branches › turn › text; branches › hold › text; branches › kind › text…</td>
+        <td class="small">She tried to tell you, Thursday, at the tower. You made a joke.</td>
+      </tr><tr>
+        <td><span class="chip learn">read</span></td>
+        <td>phone (case 2)<br>text (case 1)</td>
+        <td>phone (case 1)<div>truth of: wake</div></td>
+        <td class="small">14 lines in nights › final; moments › tell; branches › text › text; branches › watch › night…</td>
+        <td class="small">She did text you. You left it on Read.</td>
+      </tr><tr>
+        <td><span class="chip learn">why_secret</span></td>
+        <td>tower (case 1)<br>text (case 1)</td>
+        <td>stay (case 1)<br>loop (case 1)<br>go (case 1)<div>truth of: driveway</div></td>
+        <td class="small">8 lines in moments › freeReplies › accuse; branches › house › night; branches › tower › text; branches › text › text…</td>
+        <td class="small">She didn’t tell you because if you’d asked her to stay, she would have.</td>
+      </tr><tr>
+        <td><span class="chip learn">march</span></td>
+        <td>jacket (case 1)</td>
+        <td><span class="dim">—</span></td>
+        <td class="small">1 line in nights › final</td>
+        <td class="small">The letter came in March. She’s carried it in your jacket ever since.</td>
+      </tr><tr>
+        <td><span class="chip learn">photo</span></td>
+        <td>photos (case 1)</td>
+        <td><span class="dim">—</span></td>
+        <td class="small">5 lines in moments › freeReplies › photo; branches › confess › night</td>
+        <td class="small">The fourth frame. She was looking at you.</td>
+      </tr><tr>
+        <td><span class="chip learn">august</span></td>
+        <td>remember (case 1)</td>
+        <td><span class="dim">—</span></td>
+        <td class="small">3 lines in branches › confess › night</td>
+        <td class="small">August, on the tower. You didn’t move for forty minutes.</td>
+      </tr><tr>
+        <td><span class="chip learn">sketch</span></td>
+        <td>house (case 1)</td>
+        <td><span class="dim">—</span></td>
+        <td class="small">1 line in nights › final</td>
+        <td class="small">Her sketchbook: <em>I didn’t tell you because—</em> crossed out.</td>
+      </tr><tr>
+        <td><span class="chip learn">feelings</span></td>
+        <td>set by the game: after sketch, or after both photo and august</td>
+        <td>screen door (case 1)<br>confess (case 1)</td>
+        <td class="small">8 lines in replies › out; moments › freeReplies › out; branches › screen door › text; branches › wave › text; branches › wave › night…</td>
+        <td class="small">You love her. You have for a long time.</td>
+      </tr><tr>
+        <td><span class="chip fix">peace</span></td>
+        <td>tower (case 1), as a fix<br>text (case 1), as a fix<br>goodbye (case 1), as a fix<br>go (case 1), as a fix</td>
+        <td><span class="dim">—</span></td>
+        <td class="small"><span class="dim">—</span></td>
+        <td class="small">You’ve said goodbye without a fight.</td>
+      </tr><tr>
+        <td><span class="chip fix">keep</span></td>
+        <td>stay (case 1), as a fix</td>
+        <td><span class="dim">—</span></td>
+        <td class="small"><span class="dim">—</span></td>
+        <td class="small">You’ve asked her to stay.</td>
+      </tr><tr>
+        <td><span class="chip fix">confess</span></td>
+        <td>confess (case 1), as a fix</td>
+        <td><span class="dim">—</span></td>
+        <td class="small"><span class="dim">—</span></td>
+        <td class="small">You’ve told her how you feel.</td>
+      </tr><tr>
+        <td><span class="chip fix">sorry</span></td>
+        <td>knock (case 1), as a fix</td>
+        <td><span class="dim">—</span></td>
+        <td class="small"><span class="dim">—</span></td>
+        <td class="small">You’ve knocked. You’ve said sorry.</td>
+      </tr><tr>
+        <td><span class="chip fix">station</span></td>
+        <td>bus (case 1), as a fix</td>
+        <td><span class="dim">—</span></td>
+        <td class="small"><span class="dim">—</span></td>
+        <td class="small">You’ve tried leaving with her.</td>
+      </tr><tr>
+        <td><span class="chip fix">permission</span></td>
+        <td>loop (case 1), as a fix</td>
+        <td><span class="dim">—</span></td>
+        <td class="small"><span class="dim">—</span></td>
+        <td class="small">You told her about the loop. She gave you her part back.</td>
+      </tr><tr>
+        <td><span class="chip learn">relived</span></td>
+        <td>set by the game: every day after the first</td>
+        <td><span class="dim">—</span></td>
+        <td class="small"><span class="dim">—</span></td>
+        <td class="small">Maya is leaving tonight. The bus is at 8:45.</td>
+      </tr><tr>
+        <td><span class="chip learn">ready</span></td>
+        <td>set by the game: 3 different fixes, and knowing why_secret</td>
+        <td>watch (case 1)</td>
+        <td class="small"><span class="dim">—</span></td>
+        <td class="small">There’s one thing you haven’t let yourself try. Letting every moment go by, on purpose.</td>
+      </tr></tbody>
+  </table></div>
+  </section>
+  <section id="words">
+  <h2>Every word the game listens for</h2>
+  <p>The global list, checked after each moment's own words. The first match wins, so the order matters.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Action</th><th>Words</th><th>Changes the day at / answers</th></tr></thead>
+    <tbody><tr><td class="mono">unsafe</td><td class="words">kill myself · suicide · end my life · want to die · wanna die · rather die · hurt myself · end it all · dont want to wake up · never wake up · want to disappear · wish i wasnt here · dont want to be here · dont want to exist · better off without me</td><td><span class="chip free">anywhere</span></td></tr><tr><td class="mono">stop</td><td class="words">make it stop · make it end · make this stop · want it to stop · =stop</td><td><span class="chip free">anywhere</span></td></tr><tr><td class="mono">tired</td><td class="words">whats the point · no point · im tired · so tired · im exhausted</td><td><span class="chip free">anywhere</span></td></tr><tr><td class="mono">out</td><td class="words">im gay · im a lesbian · i like girls · im queer · im bi · gay · lesbian · queer</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">awake</td><td class="words">stay awake · dont sleep · dont close · keep my eyes open · stay up · dont fall asleep</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">notstay</td><td class="words">not stay · not staying · wasnt going to stay · never stay · wont stay</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">loop</td><td class="words">lived today · live today · living today · time loop · loop · same day · tuesday again · relive · reliving</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">real</td><td class="words">this isnt real · isnt real · not real · is this real · dreaming</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">thursday</td><td class="words">go back to thursday · back to thursday · redo thursday</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">hand</td><td class="words">on my hand · write it down · write it on</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">letter</td><td class="words">write her a letter · write a letter · letter</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">steal</td><td class="words">steal · her ticket · hide her ticket · rip her ticket</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">aloud</td><td class="words">out loud · aloud</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">count</td><td class="words">count</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">rehearse</td><td class="words">rehearse · practice what · make a list · plan what · what to say · run it in my head</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">drawer</td><td class="words">drawer · money · forty · sock · savings</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">call</td><td class="words">call her · call maya · phone call · call</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">who</td><td class="words">who are you · whos telling · who is telling · who is this</td><td><span class="chip free">free reply</span></td></tr><tr><td class="mono">hide</td><td class="words">stay in bed · stay home · sleep · back to bed · hide · blanket · lie in bed · close my eyes · lie here · lie still · stay put · dont get up · dont want to get up</td><td>wake, home</td></tr><tr><td class="mono">stay</td><td class="words">dont let · dont go · dont leave · stay · stayed · staying · stop her · keep her · beg</td><td>driveway</td></tr><tr><td class="mono">nothing</td><td class="words">=wait · =z · =get up · =go on · =continue · =leave · nothing · let it happen · let it be · let her go · let go · change nothing · =the same · same as before · accept · dont do anything · dont say anything · dont knock · =eat · eat the eggs · go home · walk away · whatever · i dont care · dont ask · dont answer · dont reply · dont text · dont run · dont look</td><td><span class="dim">no moment</span></td></tr><tr><td class="mono">breathe</td><td class="words">breathe · breath · calm · relax · soup</td><td>wake, diner</td></tr><tr><td class="mono">confess</td><td class="words">love · confess · kiss · feelings · how i feel · i like her · crush · tell her everything</td><td>driveway</td></tr><tr><td class="mono">bus</td><td class="words">bus · station · go with · come with · take me · run away · leave town · chicago · make it · get on · catch · feed store</td><td>home</td></tr><tr><td class="mono">knock</td><td class="words">knock · follow · door · go after · run after · go inside · go in · doorbell</td><td>porch, home</td></tr><tr><td class="mono">sorry</td><td class="words">sorry · apologize · apologise · make it right · make up</td><td>driveway, porch</td></tr><tr><td class="mono">goodbye</td><td class="words">goodbye · bye · hug · see her off · help her · carry</td><td>driveway</td></tr><tr><td class="mono">original</td><td class="words">tell her to go · then go · go then · fine · everybody knew · yell · scream · confront · angry</td><td>driveway</td></tr><tr><td class="mono">house</td><td class="words">mayas · her house · her room · reyes · mrs · search</td><td>wake</td></tr><tr><td class="mono">mom</td><td class="words">mom · mother · lourdes · kitchen · pharmacy</td><td>wake, kitchen</td></tr><tr><td class="mono">text</td><td class="words">text · reply · answer · message her</td><td>wake, street</td></tr><tr><td class="mono">phone</td><td class="words">phone · messages · message · texts · scroll · read</td><td>wake</td></tr><tr><td class="mono">theo</td><td class="words">theo · diner · dot · dots</td><td>wake, kitchen, diner</td></tr><tr><td class="mono">photos</td><td class="words">photo · photos · corkboard · board · picture · pictures · strip</td><td>wake</td></tr><tr><td class="mono">remember</td><td class="words">remember · think back · think about · memory · memories · reminisce</td><td>wake, home</td></tr><tr><td class="mono">tower</td><td class="words">tower · climb · go up · go there · find her · find maya · see her · see maya</td><td>wake, street</td></tr><tr><td class="mono">talk</td><td class="words">talk · ask · say · speak · tell · why · maya · her</td><td>wake, kitchen, diner, driveway, porch, home</td></tr></tbody>
+  </table></div>
+  </section>
+  <p class="dim small">Rebuild with <code>node tomorrow/tools/decision-map.js</code> after changing the story.</p>
+</main>

@@ -903,4 +903,4 @@ What it takes: driveway words `hurt`, `it hurt`, `you hurt me`, `i'm mad at you`
 
 ---
 
-_Not checked: I didn't run `node tomorrow/test.js` (nothing in the game changed). I only played the real game on day two, so I didn't check how replays or `[heal]` lines would read with these proposals in place. Every invented fact is marked **(proposed canon)**. The biggest ones to approve or veto are Mom's Annie (E2), Theo being queer (E4), and March (E6)._
+_Not checked: I didn't run `node tomorrow/test/test.js` (nothing in the game changed). I only played the real game on day two, so I didn't check how replays or `[heal]` lines would read with these proposals in place. Every invented fact is marked **(proposed canon)**. The biggest ones to approve or veto are Mom's Annie (E2), Theo being queer (E4), and March (E6)._

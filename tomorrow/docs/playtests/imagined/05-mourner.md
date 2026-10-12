@@ -905,8 +905,8 @@ Misfires found while checking, worth fixing even without any new scene:
 
 **To build:** have the ritual branches above set small facts, and add tagged lines to `again` (`[if gave_jacket]`, …). `say()` already handles tags. It only matters once proposals 3, 4 or 9 exist.
 
-_Also worth a look: the existing notes in `notes/nell-simulation.md` sketch "see her off without getting on" (P4) and "watch it go from the tower" (P14). Proposals 1 and 6 here are fuller versions of the same two ideas, arrived at independently, which suggests they're what players will actually try._
+_Also worth a look: the existing notes in `docs/playtests/nell-simulation.md` sketch "see her off without getting on" (P4) and "watch it go from the tower" (P14). Proposals 1 and 6 here are fuller versions of the same two ideas, arrived at independently, which suggests they're what players will actually try._
 
 ---
 
-_Not checked: whether the imagined branches would pass `node tomorrow/test.js`, since nothing was built. Every "In the game" note comes from the play harness on the second Tuesday (session: scratchpad/harness/sessions/mourner-05.txt, plus a helper that branched single inputs from the same save). A few inputs were only checked at one moment._
+_Not checked: whether the imagined branches would pass `node tomorrow/test/test.js`, since nothing was built. Every "In the game" note comes from the play harness on the second Tuesday (session: scratchpad/harness/sessions/mourner-05.txt, plus a helper that branched single inputs from the same save). A few inputs were only checked at one moment._
