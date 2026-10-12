@@ -1,7 +1,8 @@
 /*
-  Builds docs/decision-map.html: every moment, every action, every case of every branch,
-  and every knowledge check, read straight from game/story.js and game/game.js.
-  Run it after changing the story:
+  Builds docs/decision-map.html, the map of every path through the game: each moment,
+  what the player can do there, every case of every branch, and every fact the game
+  checks. It reads game/story.js and game/game.js directly, so it can't drift from the
+  game. Run it after changing the story:
 
       node tomorrow/tools/decision-map.js
 */
@@ -14,391 +15,386 @@ const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
 
 // Load the story and the engine's rules without a browser (startGame() needs a page, so it's left out).
 const code = read("game/story.js") + "\n" + read("game/game.js").replace(/startGame\(\);\s*$/, "");
-const { STORY, FIXES, FIXES_NEEDED } = new Function(
-  "console",
-  code + "\nreturn { STORY, FIXES, FIXES_NEEDED };",
-)({ warn() {}, log() {} });
+const { STORY, FIXES, FIXES_NEEDED } = new Function("console", code + "\nreturn { STORY, FIXES, FIXES_NEEDED };")({
+  warn() {},
+  log() {},
+});
+
+/* ---------------- plain names for things ---------------- */
+
+// What each fact means, in a few words. The code name is shown next to it.
+const FACT_NAMES = {
+  relived: "that today is a repeat",
+  reason: "why Maya is going",
+  why_secret: "why Maya never told her",
+  tried_to_tell: "that Maya tried to tell her on Thursday",
+  read: "that she left Maya's text on Read",
+  nobody_laughed: "that nobody at the diner was laughing at her",
+  mom: "that Mom knew",
+  out_loud: "that she told Mom out loud",
+  photo: "the fourth frame of the photo strip",
+  august: "the night in August on the tower",
+  sketch: "what's in Maya's sketchbook",
+  march: "that the letter came in March",
+  feelings: "how she feels about Maya",
+  ready: "that the way out is open",
+  peace: "the peace fix (a goodbye without a fight)",
+  keep: "the keep fix (asking her to stay)",
+  confess: "the confess fix (telling her)",
+  sorry: "the sorry fix (knocking)",
+  station: "the station fix (getting on the bus)",
+  permission: "the permission fix (telling her about the loop)",
+};
+
+// What a player would naturally type for each branch, shown as the example.
+const EXAMPLES = {
+  phone: "check my phone", photos: "look through the photos", remember: "remember", hide: "stay in bed",
+  house: "go to her house", mom: "ask mom what lourdes said", "screen door": "finish her sentence",
+  breathe: "breathe", theo: "talk to theo", turn: "turn around", hold: "hold my breath", kind: "it's not your fault",
+  "say what": "say something", tower: "go to the tower", text: "text maya", goodbye: "say goodbye",
+  stay: "please stay", confess: "i love you", knock: "knock", bus: "run for the bus", jacket: "can i have my jacket back",
+  loop: "i've lived today before", go: "you should go", watch: "watch the bus go from the tower", wave: "see her off",
+};
+
+const PLACES = {
+  wake: "Your room",
+  kitchen: "The kitchen",
+  diner: "Dot's Diner",
+  street: "Main Street",
+  driveway: "The Reyeses' driveway",
+  porch: "Her porch",
+  home: "Home, with the bus idling",
+};
 
 /* ---------------- helpers ---------------- */
 
 const esc = (text) => String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const list = (value) => [value].flat(Infinity).filter(Boolean);
+const tagsOf = (line) => (String(line).match(/^\[([^\]]*)\]/) || [, ""])[1];
 
-// A story line without its [tags] and markers, with *italics*, cut to a readable length.
-function plain(line, max = 150) {
+// A line of the story as the player would read it, cut to a readable length.
+// Story text is shown in italics, the way the game shows emphasis, without extra quote marks.
+function quote(line, max = 160) {
   let text = String(line).replace(/^\[[^\]]*\]\s*/, "").replace(/^(# |~ |_ |> )/, "").replace(/ \| /g, " ");
   if (text.length > max) text = text.slice(0, max - 1).trimEnd() + "…";
-  return esc(text).replace(/\*(.+?)\*/g, "<em>$1</em>").replace(/\{enter\}/g, "ENTER");
+  if ((text.match(/\*/g) || []).length % 2) text = text.replace(/\*([^*]*)$/, "$1"); // cut mid-italics
+  text = esc(text).replace(/\*(.+?)\*/g, "<b>$1</b>").replace(/\{enter\}/g, "ENTER");
+  return `<i class="game">${text}</i>`;
 }
 
-const tagsOf = (line) => (String(line).match(/^\[([^\]]*)\]/) || [, ""])[1];
-const list = (value) => [value].flat(Infinity).filter(Boolean);
-const chip = (kind, text) => `<span class="chip ${kind}">${esc(text)}</span>`;
-const facts = (names, kind) => names.map((name) => chip(kind, name)).join(" ");
+const factName = (fact) => `${esc(FACT_NAMES[fact] || fact)} <code>${esc(fact)}</code>`;
 
-// Every string in the story, with where it lives, e.g. "moments › diner › tell".
-function* stringsIn(value, where) {
-  if (typeof value === "string") yield { text: value, where };
-  else if (Array.isArray(value)) for (const item of value) yield* stringsIn(item, where);
-  else if (value && typeof value === "object") {
-    for (const [key, item] of Object.entries(value)) yield* stringsIn(item, where ? `${where} › ${key}` : key);
-  }
+// "a, b and c"
+function joined(items) {
+  if (items.length <= 1) return items.join("");
+  return items.slice(0, -1).join(", ") + " and " + items.at(-1);
 }
 
-/* ---------------- what the story contains ---------------- */
-
-const moments = STORY.moments;
-const branchNames = Object.keys(STORY.branches);
 const casesOf = (name) => STORY.branches[name].map((c) => ({ needs: [], learn: [], fix: null, night: null, ...c }));
+const anchor = (name) => "b-" + name.replace(/\s+/g, "-");
+const placed = new Set(); // branches already given an anchor, so each id is used once
 
-// Which moments lead to each branch, and through which action.
+// Where each branch can be reached from.
 const reachedFrom = {};
-for (const moment of moments) {
+for (const moment of STORY.moments) {
   for (const [action, branch] of Object.entries(moment.changes || {})) {
-    if (branch === "let it happen") continue;
-    (reachedFrom[branch] ||= []).push({ moment: moment.id, action });
+    if (branch !== "let it happen") (reachedFrom[branch] ||= []).push(moment.id);
   }
 }
 
-// Every fact: where it's learned, and every place that checks it.
-const factInfo = {};
-const fact = (name) => (factInfo[name] ||= { learnedBy: [], neededBy: [], lines: [], truthOf: [] });
-for (const name of branchNames) {
-  casesOf(name).forEach((c, i) => {
-    c.learn.forEach((f) => fact(f).learnedBy.push(`${name} (case ${i + 1})`));
-    c.needs.forEach((f) => fact(f).neededBy.push(`${name} (case ${i + 1})`));
-    if (c.fix) fact(c.fix).learnedBy.push(`${name} (case ${i + 1}), as a fix`);
-  });
-}
-for (const moment of moments) if (moment.truth) fact(moment.truth).truthOf.push(moment.id);
-for (const { text, where } of stringsIn(STORY, "")) {
-  for (const tag of tagsOf(text).split(",").map((t) => t.trim())) {
-    const match = tag.match(/^if (not )?(.+)$/);
-    if (match) fact(match[2]).lines.push({ where, not: Boolean(match[1]), text });
+/* ---------------- one case, in plain sentences ---------------- */
+
+function describeCase(c, index, cases) {
+  const parts = [];
+  const first = list(c.text).find((line) => !/day two/.test(tagsOf(line)));
+
+  let condition = "";
+  if (c.needs.length) condition = `If Nell knows ${joined(c.needs.map(factName))}: `;
+  else if (cases.length > 1) condition = index === 0 ? "" : "Otherwise: ";
+  parts.push(`${condition}${quote(first)}`);
+
+  if (c.learn.length) parts.push(`She learns ${joined(c.learn.map(factName))}.`);
+  if (c.fix) parts.push(`This counts as ${esc(FACT_NAMES[c.fix] || c.fix)}.`);
+  if (c.scene) parts.push(`It's the same scene as <a href="#${anchor(c.scene)}">${esc(c.scene)}</a>, so doing both counts as a repeat.`);
+
+  if (c.wayOut) {
+    parts.push(`<strong>This ends the loop</strong> as ${esc(STORY.endings[c.wayOut].name)}.`);
+  } else if (c.night) {
+    const night = list(c.night).find((line) => !line.startsWith("# "));
+    parts.push(`The day ends. That night: ${quote(night, 120)}`);
+  } else {
+    parts.push("The day doesn't end. The moment stays open and she can still choose.");
   }
+  return parts.join(" ");
 }
-fact("feelings").learnedBy.push("set by the game: after sketch, or after both photo and august");
-fact("relived").learnedBy.push("set by the game: every day after the first");
-fact("ready").learnedBy.push(`set by the game: ${FIXES_NEEDED} different fixes, and knowing why_secret`);
+
+function describeBranch(name) {
+  const cases = casesOf(name);
+  if (cases.length === 1) return describeCase(cases[0], 0, cases);
+  return `<ul class="cases">${cases.map((c, i) => `<li>${describeCase(c, i, cases)}</li>`).join("")}</ul>`;
+}
 
 /* ---------------- sections ---------------- */
 
-function legend() {
-  const items = [
-    ["need", "needs", "a fact Nell must know for this case"],
-    ["learn", "learns", "a fact this case teaches"],
-    ["fix", "fix", "counts toward the way out"],
-    ["end", "ends the day", "the night, then 7:14 again"],
-    ["free", "free", "the moment stays open"],
-    ["out", "way out", "ends the loop"],
-  ];
-  return `<div class="legend">${items.map(([kind, name, what]) => `<span class="item">${chip(kind, name)} ${what}</span>`).join("")}</div>`;
+function intro() {
+  return `<header>
+  <h1>TOMORROW</h1>
+  <p class="sub">The decision map</p>
+  <p>This is every path through the game: what the player can do at each of the seven moments, what each choice leads to, and what Nell has to know for some of them to work. I generate it from <code>game/story.js</code>, so it always matches what's actually in the game.</p>
+  <p>A few words I use throughout. A <strong>moment</strong> is one of the seven places the day stops and waits. A <strong>change</strong> is the one thing the player can do differently each day, and it usually ends the day. A <strong>fact</strong> is something Nell finds out. Facts are the only thing that survives the loop. A <strong>fix</strong> is a change that tries to repair the day, and the way out needs ${FIXES_NEEDED} different ones.</p>
+  <nav>
+    <a href="#rules">How a turn works</a>
+    <a href="#endings">How the loop ends</a>
+    <a href="#day">The seven moments</a>
+    <a href="#facts">What Nell can know</a>
+    <a href="#words">Words the game listens for</a>
+  </nav>
+  </header>`;
 }
 
-function rulesSection() {
+function rules() {
   return `<section id="rules">
-  <h2>How the game decides</h2>
-  <p>Every time the player presses ENTER, the game checks these in order and stops at the first that fits.</p>
-  <ol class="steps">
-    <li><b>RESTART</b>, anywhere: the restart menu. <i>Back to the first Tuesday</i> erases what Nell learned and keeps the endings found and the colors. <i>Erase everything</i> also erases those and asks how you feel again.</li>
-    <li><b>Answers that work anywhere</b> (<code>STORY.anywhere</code>): ${Object.keys(STORY.anywhere).map((k) => `<code>${k}</code>`).join(", ")}. Safety first, in every mode, even at night.</li>
-    <li><b>HELP, LOOK, THINK, inventory</b>: free. THINK lists every fact Nell knows.</li>
-    <li><b>ENTER on an empty line</b>: the moment happens the way it happened (its <code>letItHappen</code>), and the day moves on. An ENTER within 0.7s of a new page is ignored.</li>
-    <li><b>Only punctuation or emoji</b>: not understood.</li>
-    <li><b>Day one</b>: nothing can change. The game repeats back what was meant (“You mean to…”), then the moment happens anyway.</li>
-    <li><b>Find the action</b>: the moment's own <code>words</code> first, then the global <code>words</code>, top to bottom. The first match wins.</li>
-    <li><b>What Nell actually did</b> (<code>nothing</code>, or a change marked “let it happen”): the moment happens.</li>
-    <li><b>“look at …” / “look around”</b>: always free. The moment's reply for that thing, or LOOK.</li>
-    <li><b>Hiding on the second Tuesday</b>: warned once (“Last Tuesday you didn’t”). The second try hides.</li>
-    <li><b>A change</b>: the branch. Its first case whose <code>needs</code> Nell knows plays. See below.</li>
-    <li><b>A free reply</b>: the moment's own, then the global <code>replies</code>. The moment stays open.</li>
-    <li><b>An action from another moment</b>: “Not yet.” (or “She isn’t here. Not yet.” for Maya) if it comes later, “That moment’s already gone.” if it came earlier.</li>
-    <li><b>Anything else</b>: one of the three misses, and from the second miss on, a hint.</li>
+  <h2>How a turn works</h2>
+  <p>Each time the player presses ENTER, the game goes down this list and stops at the first thing that fits.</p>
+  <ol>
+    <li><strong>RESTART</strong> opens the restart menu. "Back to the first Tuesday" makes Nell forget everything but keeps the endings found and the colors. "Erase everything" clears those too.</li>
+    <li><strong>A few things are answered anywhere</strong>, even at night: thoughts of self-harm get the 988 line, and "make it stop" or "what's the point" get their own replies.</li>
+    <li><strong>HELP, LOOK, THINK and inventory</strong> never use up the day. THINK lists what Nell knows.</li>
+    <li><strong>An empty ENTER</strong> lets the moment happen the way it happened, and the day moves on.</li>
+    <li><strong>On day one</strong>, nothing can change. The game says what Nell meant to do, then it happens the old way.</li>
+    <li>The game finds the <strong>action</strong> in what was typed. It checks the moment's own words first, then the global list, and the first match wins.</li>
+    <li>If it's <strong>what Nell actually did</strong> ("eat", "keep walking", "fine, then go"), the moment happens.</li>
+    <li>Anything starting with <strong>"look at"</strong> is free, at every moment.</li>
+    <li>On the second Tuesday, <strong>hiding in bed</strong> gets one warning first.</li>
+    <li>If the action is a <strong>change</strong> at this moment, it plays. The branch picks its first case whose facts Nell knows.</li>
+    <li>If there's a <strong>free reply</strong> for it, at this moment or anywhere, it answers and the moment stays open.</li>
+    <li>If it's a change that belongs to <strong>another moment</strong>, the game says "Not yet." or "That moment's already gone."</li>
+    <li>Otherwise it's a miss, and after two misses the game gives a hint.</li>
   </ol>
-
-  <h3>When a change plays</h3>
-  <ol class="steps">
-    <li>The first case whose <code>needs</code> are all known is chosen.</li>
-    <li>If that case is a fix and this scene was already used for a fix (<code>scene</code> lets text and tower count as one), it's a <b>repeat</b>: “Why does it sound like you practiced that?” and the night says to try something else. Nothing is learned.</li>
-    <li>Otherwise its text plays and its facts are learned. If that completes <code>sketch</code>, or <code>photo</code> + <code>august</code>, Nell admits her feelings (learns <code>feelings</code>).</li>
-    <li>No <code>night</code>: it was a reply, and the moment stays open.</li>
-    <li>On the second Tuesday: “And just like that, it’s a different day.” The next morning remembers how far she got, if it was the street or later.</li>
-    <li><code>wayOut</code>: the loop ends here (watching the bus go, on a ready day). Otherwise the fix is recorded and the night begins.</li>
-  </ol>
-
-  <h3>When every moment is let happen</h3>
-  <table>
-    <thead><tr><th>When</th><th>Checks</th><th>Result</th></tr></thead>
-    <tbody>
-      <tr><td>Day one</td><td>always</td><td>The first night. Tomorrow will be different.</td></tr>
-      <tr><td>The second Tuesday</td><td>nothing was learned today</td><td>${chip("out", "Without Knowing")} The night, a Wednesday where only “get up” goes on, then ten years later.</td></tr>
-      <tr><td>Any later day</td><td>ready: ${FIXES_NEEDED} of ${FIXES.length} fixes and <code>why_secret</code></td><td>${chip("out", "Knowing")} The day is told honestly (only what Nell found out), the last night, Wednesday, “get up”.</td></tr>
-      <tr><td>Not ready</td><td>no facts at all</td><td>${plain(STORY.nights.tooSoon.noFacts[1])}</td></tr>
-      <tr><td>Not ready</td><td>facts, but no fix</td><td>${plain(STORY.nights.tooSoon.noFixes[1])}</td></tr>
-      <tr><td>Not ready</td><td>fewer than ${FIXES_NEEDED} fixes</td><td>${plain(STORY.nights.tooSoon.someFixes[1])}</td></tr>
-      <tr><td>Not ready</td><td>${FIXES_NEEDED}+ fixes, no <code>why_secret</code></td><td>${plain(STORY.nights.tooSoon.noWhy[1])}</td></tr>
-    </tbody>
-  </table>
-
-  <h3>How honestly each moment is told</h3>
-  <p>Each moment has a <code>truth</code> fact. Lines tagged <code>[felt]</code> show before Nell knows it (reality warps), <code>[heal]</code> after she knows it, and <code>[clear]</code> on the honest last day, once the way out is open. <code>[day two]</code> lines (the pushes to change something) show only on the second Tuesday.</p>
+  <p>When a change plays, making the same fix twice doesn't count. Nell gets "Why does it sound like you practiced that?" and nothing is learned. If a fact completes the sketchbook, or both the photo strip and August, Nell admits her feelings on her own. Any change on the second Tuesday adds "And just like that, it's a different day."</p>
+  <p>Each moment is told one of three ways, depending on one fact. Before Nell knows it, the day is told the way she felt it, and reality warps. After she knows it, the truth shows through. On the last day, once the way out is open, it's told the way it really was, and only with what she actually found out.</p>
   </section>`;
 }
 
-function caseRow(name, c, index) {
-  const what = c.wayOut ? chip("out", `way out: ${c.wayOut}`) : c.night ? chip("end", "ends the day") : chip("free", "reply, stays open");
-  const firstLine = list(c.text).find((line) => !/^\[day two\]/.test(line)) || "";
-  const night = c.night ? list(c.night).find((line) => !line.startsWith("# ")) : null;
-  return `<tr>
-    <td class="num">${index + 1}</td>
-    <td>${c.needs.length ? facts(c.needs, "need") : '<span class="dim">otherwise</span>'}</td>
-    <td>${facts(c.learn, "learn") || '<span class="dim">—</span>'}</td>
-    <td>${c.fix ? chip("fix", c.fix) : '<span class="dim">—</span>'}${c.scene ? `<div class="dim small">same scene as ${esc(c.scene)}</div>` : ""}</td>
-    <td>${what}<div class="line">“${plain(firstLine)}”</div>${night ? `<div class="line night">night: “${plain(night)}”</div>` : ""}</td>
-  </tr>`;
+function endings() {
+  const knowing = STORY.endings.knowing;
+  const withoutKnowing = STORY.endings.withoutKnowing;
+  return `<section id="endings">
+  <h2>How the loop ends</h2>
+  <p>At the end of a day where the player let all seven moments happen, the game checks these in order.</p>
+  <ol>
+    <li><strong>Day one</strong> always leads to the first night. ${quote(STORY.nights.first.at(-2))}</li>
+    <li><strong>${esc(withoutKnowing.name)}.</strong> On the second Tuesday, if Nell changed nothing and learned nothing, the loop ends here. She never finds out why, she gets up anyway, and the epilogue jumps ten years later to Dot's Diner. This is the only way to see the epilogue.</li>
+    <li><strong>${esc(knowing.name)}.</strong> If Nell has made ${FIXES_NEEDED} different fixes and knows why Maya never told her, the day is told honestly and the loop ends. The night the way out opens, the game says ${quote(STORY.thinner)} On a ready day, watching the bus leave from the tower at 8:40 ends it the same way.</li>
+    <li>Otherwise the day loops, and the night says what's missing:
+      <ul>
+        <li>She hasn't found out anything yet: ${quote(STORY.nights.tooSoon.noFacts[1])}</li>
+        <li>She knows things but hasn't tried a fix: ${quote(STORY.nights.tooSoon.noFixes[1])}</li>
+        <li>She's tried fewer than ${FIXES_NEEDED} fixes: ${quote(STORY.nights.tooSoon.someFixes[1])}</li>
+        <li>She has the fixes but not the why: ${quote(STORY.nights.tooSoon.noWhy[1])}</li>
+      </ul>
+    </li>
+  </ol>
+  <p>The six fixes are ${joined(FIXES.map((fix) => `<a href="#f-${fix}">${esc(fix)}</a>`))}. The bar at the top of the game counts the endings found, and that count survives a restart.</p>
+  </section>`;
 }
 
-function branchTable(name) {
-  return `<table class="cases">
-    <thead><tr><th>#</th><th>Needs</th><th>Learns</th><th>Fix</th><th>Result</th></tr></thead>
-    <tbody>${casesOf(name).map((c, i) => caseRow(name, c, i)).join("")}</tbody>
-  </table>`;
-}
+function moment(m) {
+  const header = list(m.tell).find((line) => line.startsWith("# "));
+  const time = header ? header.slice(2).replace(" | ", " · ").split(" · ")[1] : "after “Then go.”";
+  const enter = list(m.letItHappen).find((line) => !/day two/.test(tagsOf(line)));
+  const dayTwo = list(m.tell).concat(list(m.letItHappen)).filter((line) => /day two/.test(tagsOf(line)));
+  const changes = Object.entries(m.changes || {}).filter(([, branch]) => branch !== "let it happen");
+  const frees = Object.keys(m.freeReplies || {}).flatMap((key) => key.split(",").map((k) => k.trim()));
 
-function momentSection(moment, index) {
-  const header = list(moment.tell).find((line) => line.startsWith("# "));
-  const time = header ? plain(header) : moment.id;
-  const pokes = list(moment.tell).concat(list(moment.letItHappen)).filter((line) => /day two/.test(tagsOf(line)));
-  const changes = Object.entries(moment.changes || {});
-  const ownWords = moment.words || {};
-  const replies = Object.keys(moment.freeReplies || {});
+  // Several actions can lead to the same branch here ("tower" and "talk" both climb the tower).
+  const byBranch = {};
+  for (const [action, branch] of changes) {
+    const words = (m.words && m.words[action]) || STORY.words[action] || [];
+    (byBranch[branch] ||= []).push(...words.filter((w) => !w.startsWith("=")));
+  }
 
-  const changeRows = changes
-    .map(([action, branch]) => {
-      const words = ownWords[action] || STORY.words[action] || [];
-      const result =
-        branch === "let it happen"
-          ? '<span class="dim">what Nell did: the moment happens</span>'
-          : `<a href="#b-${esc(branch.replace(/\s/g, "-"))}">${esc(branch)}</a>`;
-      return `<tr><td class="mono">${esc(action)}</td><td class="words">${words.slice(0, 12).map(esc).join(" · ")}${words.length > 12 ? " …" : ""}</td><td>${result}</td></tr>`;
+  const items = Object.entries(byBranch)
+    .map(([branch, words]) => {
+      const example = EXAMPLES[branch] || words[0] || branch;
+      const others = words.filter((w) => w !== example);
+      const id = placed.has(branch) ? "" : ` id="${anchor(branch)}"`;
+      placed.add(branch);
+      return `<li${id}><p class="action">Type <kbd>${esc(example)}</kbd>${others.length ? ` <span class="also">(also: ${joined(others.slice(0, 4).map((w) => `“${esc(w)}”`))})</span>` : ""}</p>
+        <div class="result">${describeBranch(branch)}</div></li>`;
     })
     .join("");
 
-  return `<section class="moment" id="m-${moment.id}">
-    <h3><span class="idx">${index + 1}</span> ${time} <span class="dim">· ${moment.id}</span></h3>
-    <dl class="facts">
-      <dt>Truth</dt><dd>${moment.truth ? chip("need", moment.truth) + " decides felt / heal / clear" : '<span class="dim">none: told the same way</span>'}</dd>
-      <dt>ENTER</dt><dd>${list(moment.letItHappen).map((line) => `<div class="line">${tagsOf(line) ? `<span class="tag">[${esc(tagsOf(line))}]</span> ` : ""}“${plain(line)}”</div>`).join("") || '<span class="dim">the moment happens</span>'}</dd>
-      ${moment.whatNellDid ? `<dt>Typing what she did</dt><dd>“${plain(moment.whatNellDid)}”</dd>` : ""}
-      <dt>Day one</dt><dd>“${plain(moment.dayOne)}”</dd>
-      ${pokes.length ? `<dt>Second Tuesday</dt><dd>${pokes.map((line) => `<div class="line">“${plain(line)}”</div>`).join("")}</dd>` : ""}
-      <dt>Free here</dt><dd class="words">${replies.map(esc).join(" · ") || '<span class="dim">none</span>'}</dd>
-    </dl>
-    <table class="changes">
-      <thead><tr><th>Action</th><th>Words that trigger it (this moment's first)</th><th>Goes to</th></tr></thead>
-      <tbody>${changeRows}</tbody>
-    </table>
+  return `<article class="moment" id="m-${m.id}">
+    <h3 class="hdr">TUESDAY${time ? ` | ${esc(time)}` : ""}<br><span>${esc(PLACES[m.id] || m.id)}</span></h3>
+    <p>${m.truth ? `How it's told depends on whether Nell knows ${factName(m.truth)}.` : "It's told the same way every time."} ${enter ? `If the player presses ENTER: ${quote(enter)}` : "If the player presses ENTER, it happens the way it happened."}</p>
+    ${dayTwo.length ? `<p class="note">On the second Tuesday the game pushes: ${dayTwo.map((line) => quote(line, 120)).join(" ")}</p>` : ""}
+    <p class="note">On day one, anything typed here gets ${quote(m.dayOne)}</p>
+    <ul class="changes">${items}</ul>
+    ${frees.length ? `<p class="note">Free to try here, without using up the day: ${joined(frees.map(esc))}.</p>` : ""}
+  </article>`;
+}
+
+function day() {
+  return `<section id="day">
+  <h2>The seven moments</h2>
+  <p>The day runs top to bottom. At each moment the player can press ENTER or make one change. A change that ends the day sends Nell to 11:52 PM and back to 7:14 the next morning.</p>
+  ${STORY.moments.map(moment).join("")}
   </section>`;
 }
 
-function branchesSection() {
-  return `<section id="branches">
-  <h2>Every branch, case by case</h2>
-  <p>Cases are checked top to bottom. The first whose <b>needs</b> Nell knows is the one that plays.</p>
-  ${branchNames
-    .map((name) => {
-      const from = (reachedFrom[name] || []).map((r) => `${r.moment} <span class="dim">(${esc(r.action)})</span>`).join(", ");
-      return `<div class="branch" id="b-${esc(name.replace(/\s/g, "-"))}">
-        <h3>${esc(name)}</h3>
-        <p class="from">Reached from: ${from || '<span class="dim">no moment</span>'}</p>
-        ${branchTable(name)}
-      </div>`;
-    })
-    .join("")}
-  </section>`;
-}
+function facts() {
+  const learned = {};
+  const needed = {};
+  const lines = {};
+  for (const [name, cases] of Object.entries(STORY.branches)) {
+    for (const c of cases) {
+      for (const f of c.learn || []) (learned[f] ||= new Set()).add(name);
+      if (c.fix) (learned[c.fix] ||= new Set()).add(name);
+      for (const f of c.needs || []) (needed[f] ||= new Set()).add(name);
+    }
+  }
+  (function scan(value) {
+    if (typeof value === "string") {
+      for (const tag of tagsOf(value).split(",")) {
+        const match = tag.trim().match(/^if (not )?(.+)$/);
+        if (match) lines[match[2]] = (lines[match[2]] || 0) + 1;
+      }
+    } else if (value && typeof value === "object") Object.values(value).forEach(scan);
+  })(STORY);
 
-function factsSection() {
-  const order = [
-    ...Object.keys(STORY.think.facts).filter((f) => f !== "relived" && f !== "ready"),
-    "relived",
-    "ready",
-  ];
-  const names = [...new Set([...order, ...Object.keys(factInfo)])];
-  const rows = names
-    .map((name) => {
-      const info = factInfo[name] || { learnedBy: [], neededBy: [], lines: [], truthOf: [] };
-      const lineSummary = info.lines.length
-        ? `${info.lines.length} line${info.lines.length > 1 ? "s" : ""} in ${[...new Set(info.lines.map((l) => l.where.split(" › ").slice(0, 3).join(" › ")))].slice(0, 6).map(esc).join("; ")}${info.lines.length > 6 ? "…" : ""}`
-        : '<span class="dim">—</span>';
-      return `<tr>
-        <td>${chip(FIXES.includes(name) ? "fix" : "learn", name)}</td>
-        <td>${info.learnedBy.map(esc).join("<br>") || '<span class="dim">—</span>'}</td>
-        <td>${info.neededBy.map(esc).join("<br>") || '<span class="dim">—</span>'}${info.truthOf.length ? `<div>truth of: ${info.truthOf.map(esc).join(", ")}</div>` : ""}</td>
-        <td class="small">${lineSummary}</td>
-        <td class="small">${STORY.think.facts[name] ? plain(list(STORY.think.facts[name]).join(" ")) : '<span class="dim">—</span>'}</td>
-      </tr>`;
+  const set = {
+    feelings: "on her own, after the sketchbook, or after both the photo strip and August",
+    relived: "on every day after the first",
+    ready: `once she has ${FIXES_NEEDED} different fixes and knows why Maya never told her`,
+  };
+  const link = (name) => `<a href="#${anchor(name)}">${esc(name)}</a>`;
+  const names = Object.keys(FACT_NAMES);
+
+  const entries = names
+    .map((f) => {
+      const how = set[f] ? `Nell knows this ${set[f]}.` : learned[f] ? `Learned in ${joined([...learned[f]].map(link))}.` : "Never learned.";
+      const needs = needed[f] ? ` Needed for ${joined([...needed[f]].map(link))}.` : "";
+      const truth = STORY.moments.filter((m) => m.truth === f).map((m) => PLACES[m.id].toLowerCase());
+      const told = truth.length ? ` Changes how ${joined(truth)} is told.` : "";
+      const count = lines[f] ? ` It changes ${lines[f]} line${lines[f] > 1 ? "s" : ""} of the story.` : "";
+      const think = STORY.think.facts[f] ? `<span class="think">THINK: ${quote(list(STORY.think.facts[f]).join(" "))}</span>` : "";
+      return `<div class="fact" id="f-${f}"><dt>${esc(FACT_NAMES[f])} <code>${esc(f)}</code></dt><dd>${how}${needs}${told}${count} ${think}</dd></div>`;
     })
     .join("");
+
   return `<section id="facts">
-  <h2>Every fact: where it's learned, what checks it</h2>
-  <p>Knowledge is what survives the loop. <b>Needed by</b> means a branch case won't play without it. <b>Lines</b> are <code>[if …]</code> or <code>[if not …]</code> tags, which change what's said. The fixes count as facts too.</p>
+  <h2>What Nell can know</h2>
+  <p>Facts are the only thing that carries from one Tuesday to the next. Some open new choices, some change how a moment is told, and some just change a line or two. The fixes count as facts too, so the story can react to what Nell has already tried.</p>
+  <dl>${entries}</dl>
+  </section>`;
+}
+
+function words() {
+  const rows = Object.entries(STORY.words)
+    .map(([action, words]) => {
+      let where;
+      if (STORY.anywhere[action]) where = "answered anywhere";
+      else if (STORY.replies[action]) where = "a free reply";
+      else {
+        const at = STORY.moments.filter((m) => m.changes && m.changes[action]).map((m) => PLACES[m.id]);
+        where = at.length ? joined(at) : "nowhere yet";
+      }
+      return `<tr><td><code>${esc(action)}</code></td><td>${esc(where)}</td><td class="words">${words.map((w) => esc(w.replace(/^=/, ""))).join(", ")}</td></tr>`;
+    })
+    .join("");
+  return `<section id="words">
+  <h2>Words the game listens for</h2>
+  <p>This is the global list. Each moment can add its own words, and those are checked first. The game goes top to bottom and takes the first match, so more specific phrases sit above general ones. A word that only counts as the whole input (like "wait") is shown here without its marker.</p>
   <div class="scroll"><table>
-    <thead><tr><th>Fact</th><th>Learned by</th><th>Needed by</th><th>Changes these lines</th><th>THINK says</th></tr></thead>
+    <thead><tr><th>Action</th><th>Where it does something</th><th>Words</th></tr></thead>
     <tbody>${rows}</tbody>
   </table></div>
   </section>`;
 }
 
-function anywhereSection() {
-  const wordRows = Object.entries(STORY.words)
-    .map(([action, words]) => {
-      const where = STORY.anywhere[action]
-        ? chip("free", "anywhere")
-        : STORY.replies[action]
-          ? chip("free", "free reply")
-          : moments.filter((m) => m.changes && m.changes[action]).map((m) => m.id).join(", ") || '<span class="dim">no moment</span>';
-      return `<tr><td class="mono">${esc(action)}</td><td class="words">${words.map(esc).join(" · ")}</td><td>${where}</td></tr>`;
-    })
-    .join("");
-  return `<section id="words">
-  <h2>Every word the game listens for</h2>
-  <p>The global list, checked after each moment's own words. The first match wins, so the order matters.</p>
-  <div class="scroll"><table>
-    <thead><tr><th>Action</th><th>Words</th><th>Changes the day at / answers</th></tr></thead>
-    <tbody>${wordRows}</tbody>
-  </table></div>
-  </section>`;
-}
-
-function endingsSection() {
-  return `<section id="endings">
-  <h2>The two endings</h2>
-  <div class="two">
-    <div class="card">
-      <h3>${esc(STORY.endings.knowing.name)}</h3>
-      <p><b>Opens:</b> ${FIXES_NEEDED} different fixes out of ${FIXES.map((f) => chip("fix", f)).join(" ")}, and ${chip("need", "why_secret")}. The night it opens: “${plain(STORY.thinner)}”</p>
-      <p><b>Then:</b> let all seven moments happen, told honestly. Or, on a ready day, watch the bus go from the tower at 8:40.</p>
-      <p><b>Ends:</b> the last night, Wednesday, “get up”. ${plain(STORY.endings.knowing.card.filter((l) => l.startsWith("_ "))[1] || "")}</p>
-    </div>
-    <div class="card">
-      <h3>${esc(STORY.endings.withoutKnowing.name)}</h3>
-      <p><b>Opens:</b> only on the second Tuesday, and only if nothing is learned that day.</p>
-      <p><b>Then:</b> resist every push to change something, and let all seven moments happen.</p>
-      <p><b>Ends:</b> “${plain(STORY.withoutKnowing.night.at(-1))}” Wednesday, “get up”, then ten years later at Dot’s.</p>
-    </div>
-  </div>
-  <p class="dim">The endings found are counted in the bar at the top and survive RESTART.</p>
-  </section>`;
-}
-
 /* ---------------- the page ---------------- */
 
-const caseCount = branchNames.reduce((n, name) => n + STORY.branches[name].length, 0);
 const page = `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tomorrow Decision Map</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-  /* One reading column; wide tables scroll inside their own box. Dark-first, like the game's terminal. */
+  /* The game's own look: one dark terminal column, IBM Plex Mono, dashed scene headers. */
   :root {
-    --bg: #0f0f0e; --fg: #dad6cd; --dim: #8a867c; --rule: #34322e; --panel: #171716;
-    --learn: #7cc3b6; --fix: #e2a95e; --need: #b8a6e0; --end: #a9a49a; --out: #e58f8f;
-    --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
-    --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bg: #0d0d0c;
+    --fg: #d8d4cb;
+    --dim: #868279;
+    --bright: #f1ede4;
+    --rule: #3a3833;
+    --light: #e9b872; /* the bus light from the cover, used only for ways out */
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
     color-scheme: dark;
   }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) {
-      --bg: #f5f3ee; --fg: #1f1e1b; --dim: #6c685f; --rule: #d9d5cc; --panel: #ecebe5;
-      --learn: #1d7f72; --fix: #a9641a; --need: #5d47a3; --end: #5c5850; --out: #b23b3b; color-scheme: light;
-    }
-  }
-  :root[data-theme="light"] {
-    --bg: #f5f3ee; --fg: #1f1e1b; --dim: #6c685f; --rule: #d9d5cc; --panel: #ecebe5;
-    --learn: #1d7f72; --fix: #a9641a; --need: #5d47a3; --end: #5c5850; --out: #b23b3b; color-scheme: light;
-  }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
-  main { max-width: 1040px; margin: 0 auto; padding-block: 40px 80px; padding-inline: 16px; }
-  h1, h2, h3 { font-family: var(--font-mono); font-weight: 500; line-height: 1.25; text-wrap: balance; }
-  h1 { font-size: 1.6rem; letter-spacing: 0.08em; margin: 0 0 0.3em; }
-  h2 { font-size: 1.15rem; margin: 2.6em 0 0.6em; padding-top: 0.8em; border-top: 1px dashed var(--rule); }
-  h3 { font-size: 0.98rem; margin: 1.8em 0 0.5em; }
-  p { max-width: 70ch; margin: 0 0 1em; }
-  a { color: inherit; text-decoration-color: var(--dim); }
-  code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
-  code { background: var(--panel); padding: 0.05em 0.35em; border-radius: 3px; }
-  .lede { color: var(--dim); font-family: var(--font-mono); font-size: 0.9rem; }
-  .stats { display: flex; flex-wrap: wrap; gap: 0.4em 1.6em; font-family: var(--font-mono); font-size: 0.85rem; color: var(--dim); margin: 1em 0 1.6em; font-variant-numeric: tabular-nums; }
-  .stats b { color: var(--fg); font-weight: 500; }
-  nav { display: flex; flex-wrap: wrap; gap: 0.3em 1.2em; font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 1.4em; }
-  .legend .item { display: inline-flex; gap: 0.4em; align-items: baseline; }
-  .legend { display: flex; flex-wrap: wrap; gap: 0.5em 1.2em; align-items: center; font-size: 0.82rem; color: var(--dim); margin: 0 0 1.2em; }
-  .chip { display: inline-block; font-family: var(--font-mono); font-size: 0.74rem; padding: 0.05em 0.45em; border: 1px solid currentColor; border-radius: 3px; white-space: nowrap; margin: 0.1em 0; }
-  .chip.learn { color: var(--learn); }
-  .chip.fix { color: var(--fix); background: color-mix(in srgb, var(--fix) 14%, transparent); }
-  .chip.need { color: var(--need); }
-  .chip.end { color: var(--end); border-style: dashed; }
-  .chip.free { color: var(--dim); }
-  .chip.out { color: var(--out); background: color-mix(in srgb, var(--out) 14%, transparent); }
-  .steps { padding-left: 1.6em; max-width: 78ch; }
-  .steps li { margin-bottom: 0.45em; }
-  .steps li::marker { font-family: var(--font-mono); color: var(--dim); }
-  table { border-collapse: collapse; width: 100%; font-size: 0.84rem; margin: 0.4em 0 1em; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); }
+  body { font-family: var(--mono); font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  main { max-width: 720px; margin: 0 auto; padding-block: 56px 96px; padding-inline: 16px; }
+  h1 { font-size: 1.7rem; font-weight: 500; letter-spacing: 0.3em; color: var(--bright); margin: 8vh 0 0; }
+  .sub { color: var(--dim); font-style: italic; margin: 0.2em 0 2em; }
+  h2 { font-size: 1rem; font-weight: 500; color: var(--bright); letter-spacing: 0.12em; text-transform: uppercase; margin: 3.5em 0 1em; }
+  p, li, dd { max-width: 66ch; }
+  p { margin: 0 0 1em; }
+  strong { color: var(--bright); font-weight: 500; }
+  a { color: var(--bright); text-decoration-color: var(--rule); text-underline-offset: 3px; }
+  a:hover, a:focus-visible { text-decoration-color: var(--bright); }
+  code { color: var(--dim); font-size: 0.85em; }
+  kbd { font-family: var(--mono); color: var(--bright); }
+  kbd::before { content: "> "; color: var(--dim); }
+  .game { font-style: italic; color: var(--bright); }
+  .game b { font-weight: 500; }
+  em { font-style: italic; }
+  nav { display: flex; flex-wrap: wrap; gap: 0.4em 1.6em; margin: 1.6em 0 0; }
+  nav a { color: var(--dim); }
+  nav a:hover { color: var(--bright); }
+  ol, ul { padding-left: 1.4em; }
+  li { margin-bottom: 0.6em; }
+  ol li::marker { color: var(--dim); }
+  .note { color: var(--dim); }
+  .note .game { color: var(--fg); }
+  .hdr { margin: 3em 0 1.2em; padding: 0.6em 0; border-top: 1px dashed var(--rule); border-bottom: 1px dashed var(--rule); font-size: 1em; font-weight: 400; letter-spacing: 0.12em; color: var(--bright); }
+  .hdr span { color: var(--dim); letter-spacing: 0; font-style: italic; }
+  .changes { list-style: none; padding: 0; margin: 1.4em 0; }
+  .changes > li { margin-bottom: 1.4em; padding-left: 1em; border-left: 1px solid var(--rule); }
+  .action { margin: 0 0 0.3em; }
+  .also { color: var(--dim); font-size: 0.9em; }
+  .result { color: var(--fg); }
+  .cases { padding-left: 1.2em; margin: 0.3em 0 0; }
+  .cases li { margin-bottom: 0.7em; }
+  .result strong { color: var(--light); }
+  dl { margin: 0; }
+  .fact { margin-bottom: 1.4em; }
+  dt { color: var(--bright); }
+  dd { margin: 0.2em 0 0 1em; }
+  .think { display: block; color: var(--dim); margin-top: 0.3em; }
+  .think .game { color: var(--dim); }
   .scroll { overflow-x: auto; }
-  th, td { text-align: left; vertical-align: top; padding: 0.45em 0.6em; border-bottom: 1px solid var(--rule); }
-  th { font-family: var(--font-mono); font-weight: 500; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--dim); }
-  td.num { font-family: var(--font-mono); color: var(--dim); font-variant-numeric: tabular-nums; }
-  td.words, dd.words { font-family: var(--font-mono); font-size: 0.78rem; color: var(--dim); }
-  .line { font-size: 0.86rem; margin-top: 0.2em; }
-  .line.night { color: var(--dim); font-style: italic; }
-  .tag { font-family: var(--font-mono); font-size: 0.75rem; color: var(--need); }
-  .dim { color: var(--dim); }
-  .small { font-size: 0.8rem; }
-  .moment, .branch { border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); padding: 0.2em 1em 0.6em; margin: 1em 0; overflow-x: auto; }
-  .moment h3, .branch h3 { margin-top: 0.8em; }
-  .idx { display: inline-block; min-width: 1.6em; color: var(--dim); }
-  .from { font-size: 0.85rem; color: var(--dim); margin-bottom: 0.4em; }
-  dl.facts { display: grid; grid-template-columns: 9.5em 1fr; gap: 0.3em 1em; margin: 0.4em 0 0.8em; font-size: 0.88rem; }
-  dl.facts dt { font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--dim); padding-top: 0.15em; }
-  dl.facts dd { margin: 0; min-width: 0; }
-  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1em; }
-  .card { border: 1px solid var(--rule); border-radius: 6px; padding: 0.2em 1em 0.4em; background: var(--panel); }
-  @media (max-width: 560px) { dl.facts { grid-template-columns: 1fr; } dl.facts dt { padding-top: 0.6em; } }
+  table { border-collapse: collapse; width: 100%; font-size: 0.85em; }
+  th, td { text-align: left; vertical-align: top; padding: 0.5em 0.7em 0.5em 0; border-bottom: 1px dashed var(--rule); }
+  th { color: var(--dim); font-weight: 400; }
+  td.words { color: var(--dim); min-width: 22em; }
+  footer { margin-top: 4em; color: var(--dim); font-size: 0.85em; border-top: 1px dashed var(--rule); padding-top: 1em; }
 </style>
 
 <main>
-  <h1>TOMORROW · DECISION MAP</h1>
-  <p class="lede">every moment, action, case and knowledge check, generated from game/story.js</p>
-  <div class="stats">
-    <span><b>${moments.length}</b> moments</span>
-    <span><b>${branchNames.length}</b> branches</span>
-    <span><b>${caseCount}</b> cases</span>
-    <span><b>${FIXES.length}</b> fixes, ${FIXES_NEEDED} needed</span>
-    <span><b>${Object.keys(factInfo).length}</b> facts</span>
-    <span><b>2</b> endings</span>
-  </div>
-  <nav>
-    <a href="#rules">how it decides</a><a href="#endings">endings</a><a href="#day">the day</a>
-    <a href="#branches">branches</a><a href="#facts">facts</a><a href="#words">words</a>
-  </nav>
-  ${legend()}
-  ${rulesSection()}
-  ${endingsSection()}
-  <section id="day">
-    <h2>The day, moment by moment</h2>
-    <p>One change per day. Everything listed under <b>Free here</b> answers without using up the day, and so does any “look at …”.</p>
-    ${moments.map(momentSection).join("")}
-  </section>
-  ${branchesSection()}
-  ${factsSection()}
-  ${anywhereSection()}
-  <p class="dim small">Rebuild with <code>node tomorrow/tools/decision-map.js</code> after changing the story.</p>
+  ${intro()}
+  ${rules()}
+  ${endings()}
+  ${day()}
+  ${facts()}
+  ${words()}
+  <footer>Generated from the game's own files. After changing the story, rebuild it with <code>node tomorrow/tools/decision-map.js</code>.</footer>
 </main>
 `;
 
 const out = path.join(root, "docs", "decision-map.html");
 fs.writeFileSync(out, page);
-console.log(`wrote ${path.relative(process.cwd(), out)}: ${moments.length} moments, ${branchNames.length} branches, ${caseCount} cases`);
+const cases = Object.values(STORY.branches).reduce((n, c) => n + c.length, 0);
+console.log(`wrote ${path.relative(process.cwd(), out)}: ${STORY.moments.length} moments, ${Object.keys(STORY.branches).length} branches, ${cases} cases`);

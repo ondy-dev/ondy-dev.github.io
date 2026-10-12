@@ -1,6 +1,6 @@
 # Tomorrow: Design Notes
 
-**Play:** `/tomorrow/` · **Writing:** `game/story.js` · **Engine:** `game/game.js` · **Check:** `node tomorrow/test/test.js` · **Every path:** [decision map](decision-map.html)
+**Play:** `/tomorrow/` · **Writing:** `game/story.js` · **Engine:** `game/game.js` · **Check:** `node tomorrow/test/test.js`
 
 ---
 
@@ -215,7 +215,7 @@ I like that the truth does come out in the end, but only years later, from Maya,
       - *The Screen Door*: Nell finally finishes her sentence to Mom.
       - Small free replies for the things players kept trying.
     - **My own addition: asking for your jacket back.** It's the first thing Nell has ever asked Maya for. In the pocket is the Chicago acceptance letter, dated March. She's been carrying it on her, in your jacket, for months.
-13. **Organizing the project and mapping every path.** As the game grew, the folder got messy, so I split it by job: what the page loads (`game/`), the test, the docs and playtests, and the itch.io art. I also wanted one place that shows every possible path, so the decision map (`docs/decision-map.html`) is generated straight from `story.js`. When I change the story, the map changes with it.
+13. **Organizing the project.** As the game grew, the folder got messy, so I split it by job: what the page loads (`game/`), the test, the docs and playtests, and the itch.io art.
 
 ---
 
@@ -303,7 +303,7 @@ Each distorted moment can be told three ways:
 - `game/game.js`: the engine, as a few small classes (Line, Story, Saved, Progress, Command, Terminal, Mood, Game).
 - `game/style.css`: the terminal look, and the colors the mood screen fades into.
 - `test/test.js`: plays the game without a browser and checks the rules. Run `node tomorrow/test/test.js`.
-- `docs/decision-map.html`: every moment, action, case and knowledge check, generated from `story.js`.
+- `docs/decision-map.html`: every path through the game, moment by moment, generated from `story.js`.
 - `docs/playtests/`: the simulated playthroughs and the review that shaped my decisions.
 - `itch/cover.png`: the cover art for itch.io.
-- `tools/`: the scripts that rebuild the decision map and the itch.io zip.
+- `tools/`: the scripts that rebuild the decision map and build the itch.io zip.
