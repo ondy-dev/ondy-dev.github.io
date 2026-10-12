@@ -1,0 +1,274 @@
+/* Tomorrow — terminal presentation */
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* The colors are registered as colors so they can fade: after "How do you feel today?",
+   the page drifts from these defaults into the colors of the player's mood (see Mood in game.js). */
+@property --bg { syntax: "<color>"; inherits: true; initial-value: #0d0d0c; }
+@property --fg { syntax: "<color>"; inherits: true; initial-value: #d8d4cb; }
+@property --dim { syntax: "<color>"; inherits: true; initial-value: #868279; }
+@property --bright { syntax: "<color>"; inherits: true; initial-value: #f1ede4; }
+@property --rule { syntax: "<color>"; inherits: true; initial-value: #3a3833; }
+
+:root {
+  --bg: #0d0d0c;
+  --fg: #d8d4cb;
+  --dim: #868279;
+  --bright: #f1ede4;
+  --rule: #3a3833;
+  color-scheme: dark;
+  transition: --bg 5s ease-in-out, --fg 5s ease-in-out, --dim 5s ease-in-out, --bright 5s ease-in-out,
+    --rule 5s ease-in-out;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  touch-action: manipulation; /* no double-tap zoom when tapping through pages */
+}
+
+body {
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+#term {
+  max-width: 660px;
+  min-height: 100vh;
+  margin: 0 auto;
+  /* room below the text so each new page can scroll to the top of the screen */
+  padding: 64px 16px 92vh;
+}
+
+/* The bar at the top: who made it, endings found, restart */
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  max-width: 660px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  gap: 1.2em;
+  align-items: baseline;
+  background: var(--bg);
+  box-shadow: 0 12px 12px var(--bg); /* text fades out as it scrolls under the bar */
+  color: var(--dim);
+  font-size: 0.85em;
+}
+
+#endings {
+  margin-left: auto;
+}
+
+.restart {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.restart:hover,
+.restart:focus-visible {
+  color: var(--fg);
+  text-decoration: underline;
+}
+
+/* The first screen: how do you feel today? */
+.mood {
+  max-width: 660px;
+  margin: 18vh auto 0;
+  padding: 0 16px;
+  display: grid;
+  gap: 1em;
+}
+
+.mood p {
+  margin: 0;
+}
+
+.mood label {
+  display: grid;
+  grid-template-columns: 6em 1fr;
+  align-items: center;
+}
+
+.mood input {
+  accent-color: var(--bright);
+}
+
+.note {
+  color: var(--dim);
+}
+
+/* The restart menu */
+dialog {
+  max-width: min(30em, calc(100vw - 32px));
+  padding: 1.2em 1.4em;
+  border: 1px dashed var(--rule);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.6);
+}
+
+dialog form {
+  display: grid;
+  gap: 0.3em;
+}
+
+dialog p {
+  margin: 0 0 0.8em;
+}
+
+dialog .note {
+  font-size: 0.85em;
+}
+
+/* Choices on the first screen and in the restart menu */
+.mood button,
+dialog button {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--bright);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mood button::before,
+dialog button::before {
+  content: "> ";
+  color: var(--dim);
+}
+
+.mood button:hover,
+.mood button:focus-visible,
+dialog button:hover,
+dialog button:focus-visible {
+  text-decoration: underline;
+}
+
+#out p {
+  margin: 0 0 1em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+#out em {
+  font-style: italic;
+  color: var(--bright);
+}
+
+#out h1,
+#out h2 {
+  font-size: 1em;
+  font-weight: inherit;
+  color: var(--bright);
+}
+
+.hdr {
+  margin: 2em 0 1.5em;
+  padding: 0.6em 0;
+  border-top: 1px dashed var(--rule);
+  border-bottom: 1px dashed var(--rule);
+  letter-spacing: 0.12em;
+}
+
+#out .title {
+  margin: 18vh 0 1em;
+  font-size: 1.6em;
+  letter-spacing: 0.3em;
+}
+
+#out .echo,
+#out .dim {
+  color: var(--dim);
+}
+
+#out .msg {
+  padding-left: 12px;
+  border-left: 2px solid var(--rule);
+  color: var(--bright);
+}
+
+/* Reality bending to the narrator's state of mind */
+#out .warp {
+  animation: warp 7s ease-in-out 3; /* stops after a while, so old pages sit still */
+  transform-origin: left center;
+}
+
+@keyframes warp {
+  0%,
+  100% {
+    transform: none;
+    filter: none;
+  }
+  50% {
+    transform: skewX(-5deg) scaleY(1.05);
+    filter: blur(0.5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #out .warp {
+    animation: none;
+    font-style: italic;
+  }
+}
+
+#line {
+  display: flex;
+  gap: 0.6em;
+  align-items: baseline;
+}
+
+.prompt {
+  color: var(--bright);
+}
+
+#line.busy .prompt {
+  color: var(--dim);
+}
+
+#cmd::placeholder {
+  color: var(--dim);
+  opacity: 1;
+}
+
+#cmd {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--bright);
+  font: inherit;
+  caret-color: var(--bright);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}

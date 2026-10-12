@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d0d0c" />
+  <title>Tomorrow | Andy Tran</title>
+  <meta name="description" content="Tomorrow — a short text game about one day, regret, and letting go." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- The words on this page are filled in from story.js (STORY.ui), by data-ui. -->
+  <form id="mood" class="mood" hidden>
+    <p data-ui="mood.question"></p>
+    <label><span data-ui="mood.happy"></span><input type="range" name="happy" min="0" max="10" value="0" /></label>
+    <label><span data-ui="mood.sad"></span><input type="range" name="sad" min="0" max="10" value="0" /></label>
+    <label><span data-ui="mood.angry"></span><input type="range" name="angry" min="0" max="10" value="0" /></label>
+    <label><span data-ui="mood.anxious"></span><input type="range" name="anxious" min="0" max="10" value="0" /></label>
+    <p class="note" data-ui="mood.note"></p>
+    <button type="submit" data-ui="mood.begin"></button>
+  </form>
+  <header id="bar" class="bar">
+    <span id="endings"></span>
+    <button type="button" id="restart" class="restart" data-ui="restartButton"></button>
+  </header>
+  <main id="term" aria-label="Tomorrow, a text game">
+    <div id="out" role="log" aria-live="polite"></div>
+    <form id="line" autocomplete="off">
+      <label for="cmd" class="prompt">&gt;</label>
+      <input id="cmd" type="text" autocapitalize="off" autocorrect="off" spellcheck="false"
+        enterkeyhint="enter" aria-label="Type what you want to do" />
+      <p id="status" class="sr-only" role="status"></p>
+    </form>
+  </main>
+  <dialog id="restart-menu" aria-labelledby="restart-question">
+    <form method="dialog">
+      <p id="restart-question" data-ui="restartMenu.question"></p>
+      <button value="restart" data-ui="restartMenu.restart" autofocus></button>
+      <p class="note" data-ui="restartMenu.restartNote"></p>
+      <button value="erase" data-ui="restartMenu.erase"></button>
+      <p class="note" data-ui="restartMenu.eraseNote"></p>
+      <button value="cancel" data-ui="restartMenu.cancel"></button>
+    </form>
+  </dialog>
+  <script src="story.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
