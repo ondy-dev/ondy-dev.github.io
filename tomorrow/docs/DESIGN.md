@@ -1,6 +1,6 @@
 # Tomorrow: Design Notes
 
-**Play:** `/tomorrow/` · **Writing:** `story.js` · **Engine:** `game.js` · **Check:** `node tomorrow/test.js`
+**Play:** `/tomorrow/` · **Writing:** `game/story.js` · **Engine:** `game/game.js` · **Check:** `node tomorrow/test/test.js` · **Every path:** [decision map](decision-map.html)
 
 ---
 
@@ -201,7 +201,7 @@ I like that the truth does come out in the end, but only years later, from Maya,
 9. **Hosting on itch.io.** The game's home is itch.io, which runs it inside a frame on its own page. Testing it that way showed that every page turn scrolled the whole itch.io page, so the game now scrolls only inside its own window. I also took out the link back to my portfolio, since the game lives on itch.io.
 10. **Simulated playthroughs.** To stress-test the branches, I ran AI-simulated playthroughs: one in-depth Nell, ten Nells with different levels of anxiety and personalities (frozen, perfectionist, joker, angry, romantic, detective, people-pleaser, runner, numb, steady), and five who tried to invent actions and endings the game doesn't have. Their notes are in `notes/`. The big findings: nine of ten reached Knowing, but only one reached Without Knowing, by pressing ENTER, and half of them lost the second Tuesday by accident before they ever saw a push to change something. I'm going through the rest and deciding what to change.
 11. **How do you feel today?** Before the game starts, it asks how you feel, with four sliders: happy, sad, angry and anxious. When you begin, the title appears and the page slowly fades from the default colors into yours, and they stay for the whole playthrough. The colors come from research on color and emotion. Across 30 countries, people link joy with yellow, anger with red, sadness with grey and fear with black (Jonauskaite et al., 2020). Brighter colors feel more pleasant, and more saturated ones feel more intense (Valdez & Mehrabian, 1994). The text stays readable in every mood. Only *Erase everything* asks again.
-12. **What I took from the playthroughs.** I went through the merged list (`notes/review-decisions.md`) and decided:
+12. **What I took from the playthroughs.** I went through the merged list (`playtests/review-decisions.md`) and decided:
     - **Fix everything that's clearly broken.** That includes the safety gaps (hopeless or self-harm phrasing that the game answered like any other input) and about 35 places where the game misread what you typed, like *"dont ask"* asking, or texting then climbing the tower replaying the whole scene.
     - **The second Tuesday is felt, not explained.** Changing something that day gets one quiet line, *"And just like that, it's a different day."* Hiding in bed that day warns you once first. No rules are spelled out.
     - **LOOK is free everywhere,** including 7:14, where looking at the corkboard used to secretly use up your day.
@@ -215,6 +215,7 @@ I like that the truth does come out in the end, but only years later, from Maya,
       - *The Screen Door*: Nell finally finishes her sentence to Mom.
       - Small free replies for the things players kept trying.
     - **My own addition: asking for your jacket back.** It's the first thing Nell has ever asked Maya for. In the pocket is the Chicago acceptance letter, dated March. She's been carrying it on her, in your jacket, for months.
+13. **Organizing the project and mapping every path.** As the game grew, the folder got messy, so I split it by job: what the page loads (`game/`), the test, the docs and playtests, and the itch.io art. I also wanted one place that shows every possible path, so the decision map (`docs/decision-map.html`) is generated straight from `story.js`. When I change the story, the map changes with it.
 
 ---
 
@@ -297,6 +298,12 @@ Each distorted moment can be told three ways:
 
 ## Files
 
-- `story.js`: every word in the game, as organized data. The guide at the top explains the format.
-- `game.js`: the engine, as a few small classes (Line, Story, Progress, Command, Terminal, Game).
-- `test.js`: plays the game without a browser and checks the rules. Run `node tomorrow/test.js`.
+- `index.html`: the page. It stays at the top so the game lives at `/tomorrow/`.
+- `game/story.js`: every word in the game, as organized data. The guide at the top explains the format.
+- `game/game.js`: the engine, as a few small classes (Line, Story, Saved, Progress, Command, Terminal, Mood, Game).
+- `game/style.css`: the terminal look, and the colors the mood screen fades into.
+- `test/test.js`: plays the game without a browser and checks the rules. Run `node tomorrow/test/test.js`.
+- `docs/decision-map.html`: every moment, action, case and knowledge check, generated from `story.js`.
+- `docs/playtests/`: the simulated playthroughs and the review that shaped my decisions.
+- `itch/cover.png`: the cover art for itch.io.
+- `tools/`: the scripts that rebuild the decision map and the itch.io zip.

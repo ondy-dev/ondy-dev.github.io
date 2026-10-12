@@ -2,7 +2,7 @@
   Smoke test: plays the real game (story.js + game.js) without a browser and checks
   the rules of the loop. Run it from the repo folder with:
 
-      node tomorrow/test.js
+      node tomorrow/test/test.js
 */
 
 const fs = require("fs");
@@ -95,7 +95,7 @@ function startGame() {
   };
 
   // Run story.js and game.js as if the page had loaded them.
-  const code = ["story.js", "game.js"].map((file) => fs.readFileSync(path.join(__dirname, file), "utf8")).join("\n");
+  const code = ["story.js", "game.js"].map((file) => fs.readFileSync(path.join(__dirname, "..", "game", file), "utf8")).join("\n");
   new Function(...Object.keys(browser), code)(...Object.values(browser));
 
   const input = elements.cmd;

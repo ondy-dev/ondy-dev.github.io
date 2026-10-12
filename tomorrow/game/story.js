@@ -39,7 +39,7 @@
 
   TYPOS
     A misspelled tag, fact or branch name prints a warning in the browser console,
-    and `node tomorrow/test.js` fails until it's fixed.
+    and `node tomorrow/test/test.js` fails until it's fixed.
 */
 
 /* ---------------- passages used in more than one place ---------------- */

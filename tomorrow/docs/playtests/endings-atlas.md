@@ -1,8 +1,8 @@
 # Endings atlas: the imagined run
 
-_A synthesis of five imagined playthroughs of **Tomorrow**: the dreamer, the schemer, the brave one, the meta one and the mourner (`notes/imagined/01–05`). In each one, a different kind of Nell tried whatever a real seventeen-year-old would try, whether or not the game accepts it. This file merges what they found into one map: every ending they proposed, every input the game should answer, the five endings that best serve the theme, what to reject, and how it all fits beside the two ways out that already exist._
+_A synthesis of five imagined playthroughs of **Tomorrow**: the dreamer, the schemer, the brave one, the meta one and the mourner (`docs/playtests/imagined/01–05`). In each one, a different kind of Nell tried whatever a real seventeen-year-old would try, whether or not the game accepts it. This file merges what they found into one map: every ending they proposed, every input the game should answer, the five endings that best serve the theme, what to reject, and how it all fits beside the two ways out that already exist._
 
-_It also connects to `notes/nell-simulation.md`. Its proposals are cited as **sim P1**, **sim P2**, and so on. `notes/nell-variants-synthesis.md` doesn't exist yet. The ten variant runs in `notes/variants/` were played on the real game and aren't summarized here._
+_It also connects to `docs/playtests/nell-simulation.md`. Its proposals are cited as **sim P1**, **sim P2**, and so on. `docs/playtests/nell-variants-synthesis.md` doesn't exist yet. The ten variant runs in `docs/playtests/variants/` were played on the real game and aren't summarized here._
 
 **How to read this.**
 - Game prose is in blockquotes, in the game's voice (second person, present tense). Chains are Nell, in first person, one "but…" per line, the way DESIGN.md builds them.
@@ -963,4 +963,4 @@ If permission is added, the fix table row is: **Permission** | being told it's o
 
 ---
 
-_What I didn't do: build or test any proposal in the game. Only four misfires were re-checked on the real game (sessions in `scratchpad/harness/sessions/atlas/`). Everything else marked "today" is quoted from the five imagined files, which tested with the same harness. I didn't read the ten `notes/variants/` runs in depth, only enough to confirm they exist and that the ones I checked reach the true ending between about the 7th and 14th Tuesday, which is what the `[worn]` threshold should be tuned against. Engine line counts are estimates from reading `game.js`._
+_What I didn't do: build or test any proposal in the game. Only four misfires were re-checked on the real game (sessions in `scratchpad/harness/sessions/atlas/`). Everything else marked "today" is quoted from the five imagined files, which tested with the same harness. I didn't read the ten `docs/playtests/variants/` runs in depth, only enough to confirm they exist and that the ones I checked reach the true ending between about the 7th and 14th Tuesday, which is what the `[worn]` threshold should be tuned against. Engine line counts are estimates from reading `game.js`._

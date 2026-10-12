@@ -1,6 +1,6 @@
 # Ten Nells: synthesis
 
-_Ten versions of Nell, each with a different anxiety level and temperament, each standing in for a different kind of player, played the real game (story.js + game.js) through the harness one input at a time. This note pulls their reports together. The full reports are in `notes/variants/01-frozen.md` … `10-numb.md`. Where it helps, I also cite the deep single-Nell simulation in `notes/nell-simulation.md` (marked **sim**)._
+_Ten versions of Nell, each with a different anxiety level and temperament, each standing in for a different kind of player, played the real game (story.js + game.js) through the harness one input at a time. This note pulls their reports together. The full reports are in `docs/playtests/variants/01-frozen.md` … `10-numb.md`. Where it helps, I also cite the deep single-Nell simulation in `docs/playtests/nell-simulation.md` (marked **sim**)._
 
 _Conventions: `code` names facts, branches, moments and word lists in story.js. **DATA** means a change to story.js word lists, tags or existing lines only. **WRITING** means new lines or a new branch. **ENGINE** means a small change to game.js. "Played" inputs happened in a run. "Static" inputs were checked against the matcher (`Command.findAction`, moment words first, then the global `words`, first match wins) but not played._
 
@@ -291,7 +291,7 @@ home:     { nothing: ["dont run","dont go","lie there","=lie"], see: ["see her o
             bus: ["=leave","=go","=run","=get up","run","get up and","car"], listen: ["listen","hear"] },
 ```
 
-Every new action needs either a free reply with the same name in that moment, or an entry in `changes`. Run `node tomorrow/test.js` after the patch, because a typo'd action fails it. `hold` is deliberately left out of the wake words: at 7:14 the global `breathe` ("breath") should keep catching it.
+Every new action needs either a free reply with the same name in that moment, or an entry in `changes`. Run `node tomorrow/test/test.js` after the patch, because a typo'd action fails it. `hold` is deliberately left out of the wake words: at 7:14 the global `breathe` ("breath") should keep catching it.
 
 ---
 
@@ -535,7 +535,7 @@ The pattern: the lines that land are the ones where the game **quotes the player
 
 ## 8. Recommended next steps
 
-Each step is small enough for one sitting. Run `node tomorrow/test.js` after each one.
+Each step is small enough for one sitting. Run `node tomorrow/test/test.js` after each one.
 
 1. **Safety words (DATA + 2 engine lines).** Extend `words.unsafe`, and add the global `stop` and `tired` lists with their replies (§4, last tables). This touches the hopeless-input replies too.
 2. **Stop losing the second Tuesday to the interface (ENGINE + DATA).** Warn-once for 7:14 `look at …`, plus the glance replies. The negation words (`dont ask`, `dont run`, `dont text`, `dont answer`, `stay still`, `notstay`). The diner `turn` words, with `laugh*` out of the `theo` words.
