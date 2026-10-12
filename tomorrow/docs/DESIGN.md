@@ -303,6 +303,7 @@ Each distorted moment can be told three ways:
 - `game/game.js`: the engine, as a few small classes (Line, Story, Saved, Progress, Command, Terminal, Mood, Game).
 - `game/style.css`: the terminal look, and the colors the mood screen fades into.
 - `test/test.js`: plays the game without a browser and checks the rules. Run `node tomorrow/test/test.js`.
+- `docs/decision-map.html`: every path through the game, moment by moment, generated from `story.js`.
 - `docs/playtests/`: the simulated playthroughs and the review that shaped my decisions.
 - `itch/cover.png`: the cover art for itch.io.
-- `tools/`: the script that builds the itch.io zip.
+- `tools/`: the scripts that rebuild the decision map and build the itch.io zip.
