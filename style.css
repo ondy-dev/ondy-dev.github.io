@@ -1,6 +1,7 @@
 /* Portfolio styles. Same tokens as the job-search app: warm paper, near-black
    ink, one red-orange accent. Figtree body, JetBrains Mono for small data,
-   condensed Archivo for display. Light only. No JavaScript on the site. */
+   condensed Archivo for display. Light only. The only script is hero.js, the
+   sound-reactive dot field behind the intro. */
 :root {
   --bg: #f6f3ec;
   --surface: #ffffff;
@@ -23,7 +24,7 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
@@ -76,7 +77,10 @@ a:hover { color: var(--accent-text); text-decoration-thickness: 2px; }
   .top nav a { padding: 0 6px; }
 }
 
-/* Home: intro */
+/* Home: intro, over the full-bleed dot field (hero.js). The canvas is drawn by
+   script; without it the intro sits on plain paper. */
+.hero-wrap { position: relative; isolation: isolate; }
+.hero-field { position: absolute; top: 0; left: calc(50% - 50vw); width: 100vw; height: 100%; z-index: -1; pointer-events: none; }
 .intro { padding: 48px 0 40px; }
 .intro h1 {
   font-family: var(--font-display);
@@ -91,6 +95,15 @@ a:hover { color: var(--accent-text); text-decoration-thickness: 2px; }
 .intro p { max-width: var(--measure); margin: 0 0 16px; font-size: 1.125rem; }
 .intro .meta { font-size: 1.0625rem; color: var(--ink-muted); margin: 0 0 20px; }
 .intro .lede-intro { margin: 0; }
+.sound-row { margin: 20px 0 0; }
+.hero-sound {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px;
+  font: 500 0.8125rem/1 var(--font-mono); letter-spacing: 0.02em; color: var(--ink-muted);
+  background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; cursor: pointer;
+}
+.hero-sound:hover { color: var(--accent-text); border-color: var(--accent-text); }
+.hero-sound[aria-pressed="true"] { color: var(--accent-text); border-color: var(--accent-text); background: var(--accent-soft); }
+.hero-sound[hidden] { display: none; }
 
 /* Home: sections */
 section.block { padding: 48px 0 24px; border-top: 1px solid var(--line); }
