@@ -164,7 +164,7 @@ const STORY = {
   anywhere: {
     unsafe: [
       "No. You don’t want to stop. You want *Tuesday* to stop. Those aren’t the same thing.",
-      "_ If you’re hurting for real, you can call or text 988 (in the US), any time.",
+      "_ If you’re hurting for real, you can call or text 988 (in the US), any time. Anywhere else, findahelpline.com lists free, confidential lines.",
     ],
     stop: [
       "It doesn’t stop because you ask it to. You’ve asked.",
@@ -498,7 +498,7 @@ const STORY = {
     unsafe: [
       "kill myself", "suicide", "end my life", "want to die", "wanna die", "rather die", "hurt myself", "end it all",
       "dont want to wake up", "never wake up", "want to disappear", "wish i wasnt here", "dont want to be here",
-      "dont want to exist", "better off without me",
+      "dont want to exist", "better off without me", "dont want to live", "want to end it", "kms",
     ],
     stop: ["make it stop", "make it end", "make this stop", "want it to stop", "=stop"],
     tired: ["whats the point", "no point", "im tired", "so tired", "im exhausted"],

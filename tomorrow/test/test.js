@@ -208,6 +208,7 @@ assert.match(type("knock"), /She isn’t here\. Not yet\./);
 assert.match(type("look at the ceiling"), /Ohio/);
 assert.match(type("look at the corkboard"), /you and Maya, you and Maya/); // free, even at 7:14
 assert.match(type("make it stop"), /doesn’t stop because you ask/); // answered anywhere
+for (const said of ["i dont want to live", "kms", "i want to die"]) assert.match(type(said), /988/); // safety, before anything else
 
 // Fix 1: the tower. It also teaches why Maya never told her. On the second Tuesday,
 // any change is felt: it's a different day now.
