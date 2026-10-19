@@ -360,3 +360,6 @@ details.more > .cols { margin-bottom: 8px; }
 .work-card .thumb { height: auto; }
 /* On a case-study page the hero is the point: show it whole. */
 .page .hero img { max-height: none; object-fit: contain; }
+
+@media (max-width: 719px) { .pair-ba { grid-template-columns: 1fr; } }
+.page .hero img.natural { max-width: 640px; }
