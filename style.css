@@ -284,3 +284,15 @@ pre.code code { white-space: pre; }
     }
   }
 }
+
+/* Page transitions: a work card's image morphs into the case study's hero
+   image, and back. Same-origin cross-document view transitions; a browser
+   without them, or with reduced motion, just follows the link. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  [data-vt="study-1"] { view-transition-name: study-1; }
+  [data-vt="study-2"] { view-transition-name: study-2; }
+  [data-vt="study-3"] { view-transition-name: study-3; }
+  [data-vt="study-4"] { view-transition-name: study-4; }
+  ::view-transition-group(*) { animation-duration: 0.4s; animation-timing-function: cubic-bezier(0.2, 0, 0, 1); }
+}
