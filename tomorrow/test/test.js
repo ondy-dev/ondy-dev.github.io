@@ -19,6 +19,7 @@ function startGame() {
   let shownLines = [];
   let clock = 0;
   let reloaded = false;
+  let cleared = false; // the screen was cleared during the last input
   const colors = {}; // the page's color tokens, as the mood sets them
 
   function fakeElement(extra = {}) {
@@ -38,7 +39,10 @@ function startGame() {
         shownLines.push(child.innerHTML.replace(/<[^>]+>/g, ""));
       },
       set innerHTML(html) {
-        if (html === "") shownLines = []; // the game cleared the screen
+        if (html === "") {
+          shownLines = []; // the game cleared the screen
+          cleared = true;
+        }
       },
       ...extra,
     };
@@ -110,10 +114,11 @@ function startGame() {
     // Returns everything shown, as one string.
     type(command) {
       const before = shownLines.length;
+      cleared = false;
       input.value = command;
       pressEnter();
       while (input.placeholder.includes("continue")) pressEnter();
-      return shownLines.slice(before).join("\n");
+      return (cleared ? shownLines : shownLines.slice(before)).join("\n");
     },
 
     // The first screen: moves the sliders (0 to 10), then begins.
@@ -246,11 +251,12 @@ assert.match(shown, /the very next day/); // points at the other ending
 
 // RESTART, back to the first Tuesday: Nell forgets what she learned, but the endings found
 // and the colors stay.
-type("restart");
-for (let moment = 0; moment < 8; moment++) type(""); // the title, then day one
-type(""); // wake up on day two
+// It skips day one and wakes Nell on the second Tuesday.
+const restarted = type("restart");
+assert.match(restarted, /Again\./);
+assert.doesNotMatch(restarted, /You mean to/);
 // Knowing was found, so now the second Tuesday is the other way out.
-let secondTuesday = playDay();
+let secondTuesday = restarted + playDay();
 assert.match(secondTuesday, /Knock\. Just knock\./); // the pushes
 assert.match(secondTuesday, /You still don’t know why she didn’t tell you/); // no truth
 assert.match(type("look out the window"), /First you have to get up/); // only getting up goes on

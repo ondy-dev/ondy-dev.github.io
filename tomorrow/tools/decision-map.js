@@ -157,7 +157,7 @@ function rules() {
   <h2>How a turn works</h2>
   <p>Each time the player presses ENTER, the game goes down this list and stops at the first thing that fits.</p>
   <ol>
-    <li><strong>RESTART</strong> opens the restart menu. "Back to the first Tuesday" makes Nell forget everything but keeps the endings found and the colors. "Erase everything" clears those too.</li>
+    <li><strong>RESTART</strong> opens the restart menu. "Start the loop over" wipes what Nell knows and wakes her on the second Tuesday, skipping day one, and keeps the endings found and the colors. "Erase everything" clears those too.</li>
     <li><strong>A few things are answered anywhere</strong>, even at night: thoughts of self-harm get the 988 line, and "make it stop" or "what's the point" get their own replies.</li>
     <li><strong>HELP, LOOK, THINK and inventory</strong> never use up the day. THINK lists what Nell knows.</li>
     <li><strong>An empty ENTER</strong> lets the moment happen the way it happened, and the day moves on.</li>
