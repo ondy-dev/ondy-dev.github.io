@@ -211,6 +211,11 @@ class Progress {
     this.readySince = null; // the day the way out opened
     this.finished = false; // how the loop ended: "knowing" or "withoutKnowing"
     Object.assign(this, saved);
+    // A save from an older version, or edited by hand, can have broken parts: reset those.
+    for (const key of ["facts", "fixes", "branchesPlayed", "timesSeen"]) {
+      if (!this[key] || typeof this[key] !== "object") this[key] = {};
+    }
+    if (!Number.isInteger(this.days) || this.days < 0) this.days = 0;
   }
 
   static load() {
@@ -563,7 +568,8 @@ class Game {
     this.missCount = 0; // inputs the game didn't understand today
     this.learnedToday = false; // a change today taught something (so it wasn't let go)
     this.warnedAboutHiding = false; // the second Tuesday warns once before hiding
-    this.endingsFound = Saved.load(ENDINGS_KEY, []); // RESTART keeps these
+    const found = Saved.load(ENDINGS_KEY, []);
+    this.endingsFound = Array.isArray(found) ? found : []; // RESTART keeps these
   }
 
   /* ---------------- input ---------------- */
