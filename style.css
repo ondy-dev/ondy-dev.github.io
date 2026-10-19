@@ -95,15 +95,14 @@ a:hover { color: var(--accent-text); text-decoration-thickness: 2px; }
 .intro p { max-width: var(--measure); margin: 0 0 16px; font-size: 1.125rem; }
 .intro .meta { font-size: 1.0625rem; color: var(--ink-muted); margin: 0 0 20px; }
 .intro .lede-intro { margin: 0; }
-.sound-row { margin: 20px 0 0; }
-.hero-sound {
+.sound-row { margin: 0 0 20px; display: flex; flex-wrap: wrap; gap: 8px; }
+.hero-sound, .hero-mic {
   display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px;
   font: 500 0.8125rem/1 var(--font-mono); letter-spacing: 0.02em; color: var(--ink-muted);
   background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; cursor: pointer;
 }
-.hero-sound:hover { color: var(--accent-text); border-color: var(--accent-text); }
-.hero-sound[aria-pressed="true"] { color: var(--accent-text); border-color: var(--accent-text); background: var(--accent-soft); }
-.hero-sound[hidden] { display: none; }
+.hero-sound:hover, .hero-mic:hover { color: var(--accent-text); border-color: var(--accent-text); }
+.hero-sound[hidden], .hero-mic[hidden] { display: none; }
 
 /* Home: sections */
 section.block { padding: 48px 0 24px; border-top: 1px solid var(--line); }
@@ -249,39 +248,18 @@ pre.code code { white-space: pre; }
 }
 
 /* Scroll storytelling on the case studies: fact rows and figures rise in as
-   they enter, and the tasks study's Before/After pair pins for one screen of
-   scroll while After fades in over Before. CSS scroll-driven animations only.
-   Browsers without animation-timeline, and reduced motion, keep the static
-   layout above. */
+   they enter. CSS scroll-driven animations only. Browsers without
+   animation-timeline, reduced motion and print keep the static layout. */
 @keyframes rise { from { opacity: 0; translate: 0 14px; } }
-@keyframes fade-out { to { opacity: 0; } }
-@keyframes fade-in { from { opacity: 0; } }
 @supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .study .facts > div, .study .hero, .study .shots figure {
+  @media screen and (prefers-reduced-motion: no-preference) {
+    .study .facts > div, .study .shots figure {
       animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 50%;
     }
     .study .facts > div:nth-child(2), .study .shots figure:nth-child(2) { animation-range: entry 12% entry 62%; }
     .study .facts > div:nth-child(3) { animation-range: entry 24% entry 74%; }
     .study .facts > div:nth-child(4) { animation-range: entry 36% entry 86%; }
     .study .facts > div:nth-child(5) { animation-range: entry 48% entry 98%; }
-
-    .scrub { view-timeline-name: --pair; height: 200svh; margin: 0 0 8px; }
-    .scrub .pair-ba { position: sticky; top: 96px; height: calc(100svh - 112px); display: grid; grid-template-columns: 1fr; gap: 0; margin: 0; }
-    .scrub figure { grid-area: 1 / 1; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 4px; min-height: 0; }
-    /* Before's caption leaves first, the images cross in the middle, After's caption arrives last. */
-    .scrub figcaption, .scrub img { animation: fade-out linear both; animation-timeline: --pair; }
-    .scrub figure:first-child figcaption { animation-range: contain 20% contain 35%; }
-    .scrub img { animation-range: contain 35% contain 65%; }
-    .scrub figure + figure img { animation-name: fade-in; }
-    .scrub figure + figure figcaption { animation-name: fade-in; animation-range: contain 65% contain 80%; }
-    .scrub img { width: auto; max-width: 100%; height: 100%; justify-self: start; object-fit: contain; object-position: left top; }
-    @media (min-width: 480px) { .scrub .pair-ba { top: 72px; height: calc(100svh - 88px); } }
-    @media (min-width: 720px) {
-      .scrub figure { grid-template-columns: 1fr minmax(0, 420px); grid-template-rows: minmax(0, 1fr); gap: 24px; align-items: start; }
-      .scrub figcaption { align-self: center; }
-      .scrub img { max-height: 100%; }
-    }
   }
 }
 
