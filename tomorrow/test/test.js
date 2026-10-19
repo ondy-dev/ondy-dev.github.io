@@ -249,8 +249,16 @@ assert.match(shown, /the very next day/); // points at the other ending
 type("restart");
 for (let moment = 0; moment < 8; moment++) type(""); // the title, then day one
 type(""); // wake up on day two
-playDay();
-assert.match(type("get up"), /ending found: Without Knowing \(2 of 2\)/);
+// Knowing was found, so now the second Tuesday is the other way out.
+let secondTuesday = playDay();
+assert.match(secondTuesday, /Knock\. Just knock\./); // the pushes
+assert.match(secondTuesday, /You still don’t know why she didn’t tell you/); // no truth
+assert.match(type("look out the window"), /First you have to get up/); // only getting up goes on
+secondTuesday = type("get up");
+assert.match(secondTuesday, /You get up anyway/);
+assert.match(secondTuesday, /ten years later/); // the epilogue
+assert.match(secondTuesday, /Two Tuesdays/);
+assert.match(secondTuesday, /ending found: Without Knowing \(2 of 2\)/);
 assert.ok(game.savedData["tomorrow-mood"]);
 
 // RESTART, erase everything: the endings and the colors go too, and the page starts over.
@@ -259,8 +267,7 @@ type("restart");
 assert.ok(game.wasReloaded());
 assert.deepStrictEqual(Object.keys(game.savedData), []);
 
-// The other way out: a new game where, on the second Tuesday, the player feels every
-// moment again, gets poked to change each one, and lets all of it happen anyway.
+// A new player: the second Tuesday can't be the way out until Knowing has been found.
 const newGame = startGame();
 newGame.begin(); // feeling nothing in particular
 const typeInNewGame = newGame.type;
@@ -268,16 +275,14 @@ typeInNewGame(""); // the title screen
 for (let moment = 0; moment < 7; moment++) typeInNewGame(""); // day one
 typeInNewGame(""); // wake up on day two
 
-let secondTuesday = "";
-for (let moment = 0; moment < 7; moment++) secondTuesday += typeInNewGame("") + "\n";
-assert.match(secondTuesday, /Knock\. Just knock\./); // the pokes
-assert.match(secondTuesday, /You still don’t know why she didn’t tell you/); // no truth
-assert.match(typeInNewGame("look out the window"), /First you have to get up/); // only getting up goes on
-secondTuesday += typeInNewGame("get up");
-assert.match(secondTuesday, /You get up anyway/);
-assert.match(secondTuesday, /ten years later/); // the epilogue
-assert.match(secondTuesday, /Two Tuesdays/);
-assert.match(secondTuesday, /ending found: Without Knowing \(1 of 2\)/); // a new player's first ending
+// On a first run, pressing ENTER through the second Tuesday is not letting go: nothing was tried.
+let firstRun = "";
+for (let moment = 0; moment < 7; moment++) firstRun += typeInNewGame("") + "\n";
+assert.match(firstRun, /Knock\. Just knock\./); // the pushes still come
+assert.match(firstRun, /never once picked up/);
+assert.doesNotMatch(firstRun, /WEDNESDAY|ending found/);
+
+// After finding Knowing, a restart makes the same day the way out.
 
 // Another game: on the second Tuesday, hiding warns once. The third morning remembers nothing
 // almost-let-go, since she hid at 7:14. Then the tower, a stay, and Permission open the way out,

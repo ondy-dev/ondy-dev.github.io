@@ -714,8 +714,10 @@ class Game {
     const nights = this.story.nights;
     if (this.progress.days === 0) return this.startNight([nights.first, this.story.ui.nightHint]);
 
-    // The second Tuesday, lived again exactly as it was: closure without the truth.
-    if (this.progress.days === 1 && !this.learnedToday) return this.finish("withoutKnowing");
+    // The second Tuesday, lived again exactly as it was: closure without the truth. Only after
+    // Knowing, so it's a choice to let go and not just pressing ENTER through a first run.
+    const canLetGoWithoutKnowing = this.endingsFound.includes("knowing") && !this.learnedToday;
+    if (this.progress.days === 1 && canLetGoWithoutKnowing) return this.finish("withoutKnowing");
     if (this.progress.isReady()) return this.finish("knowing");
 
     // The way out isn't open yet. The night says what's still missing.
