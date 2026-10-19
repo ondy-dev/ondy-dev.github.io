@@ -308,3 +308,17 @@ details.more > .cols { margin-bottom: 8px; }
 .facts > div > * { min-width: 0; overflow-wrap: anywhere; }
 .card .label { flex-wrap: wrap; }
 .card .label > span { min-width: 0; overflow-wrap: anywhere; }
+
+/* Kind and state tags */
+.tags { display: inline-flex; flex-wrap: wrap; gap: 4px; vertical-align: 2px; margin-left: 6px; max-width: 100%; }
+.tag { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.04em; color: var(--ink-muted); border: 1px solid var(--line-strong); border-radius: 999px; padding: 1px 7px; line-height: 1.5; white-space: nowrap; }
+.index .t { display: inline; }
+.card .label .tags { margin-left: 0; }
+
+/* Before / After pair */
+.pair-ba { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 0 8px; align-items: start; }
+.pair-ba > figure { margin: 0; min-width: 0; }
+.pair-ba figcaption { font-size: 0.875rem; color: var(--ink-muted); margin: 0 0 8px; }
+.pair-ba figcaption strong { display: block; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
+.pair-ba img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+@media (min-width: 720px) { .pair-ba img { max-width: 420px; } }
