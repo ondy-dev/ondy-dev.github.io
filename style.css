@@ -301,7 +301,7 @@ details.more > .cols { margin-bottom: 8px; }
 @media (min-width: 720px) {
   .facts { grid-template-columns: 1fr 1fr; }
   .study .hero img { max-height: 640px; }
-  .cards { grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .cards { grid-template-columns: 1fr 1fr; gap: 24px; }
   .card img { max-height: 360px; }
 }
 .cards > *, .card > * { min-width: 0; }
