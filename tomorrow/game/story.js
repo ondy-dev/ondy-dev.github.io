@@ -402,7 +402,8 @@ const STORY = {
   },
 
   /* ---------------- the other way out: letting go without knowing ----------------
-     Only on the second Tuesday. The player feels every moment again, gets poked to change
+     Only on the second Tuesday, and only once the player has found Knowing (so a first run
+     of pressing ENTER doesn't count). The player feels every moment again, gets poked to change
      each one ([day two] lines), and lets all of it happen anyway, without ever learning
      the truth. That's closure the way it usually comes: you never find out, and you go on. */
 

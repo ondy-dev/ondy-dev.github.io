@@ -216,6 +216,7 @@ I like that the truth does come out in the end, but only years later, from Maya,
       - Small free replies for the things players kept trying.
     - **My own addition: asking for your jacket back.** It's the first thing Nell has ever asked Maya for. In the pocket is the Chicago acceptance letter, dated March. She's been carrying it on her, in your jacket, for months.
 13. **Organizing the project.** As the game grew, the folder got messy, so I split it by job: what the page loads (`game/`), the test, the docs and playtests, and the itch.io art.
+14. **Without Knowing has to be earned.** Playing the itch.io build, I found that a first-time player could press ENTER through the first day, where nothing can change anyway, then through the second Tuesday, and land on Without Knowing. That's not letting go, it's never trying. Now it only opens after you've found Knowing. You restart, and resisting on the second Tuesday becomes a real choice, because you know everything you're letting go of. On a first run, pressing ENTER through that day gets *"You can't let go of something you've never once picked up."*
 
 ---
 
@@ -234,7 +235,7 @@ You get **one change per day**. LOOK, THINK, HELP and small free actions (*look 
 
 | | When | How | What you get |
 |---|---|---|---|
-| **Without Knowing** | only the second Tuesday | let all seven moments happen, resisting the pokes | the night of not knowing, then the epilogue ten years later |
+| **Without Knowing** | only the second Tuesday, after finding Knowing | let all seven moments happen, resisting the pokes | the night of not knowing, then the epilogue ten years later |
 | **Knowing** | after 3 different fixes, once Nell knows why Maya never told her | let all seven moments happen | the day told honestly, then Wednesday morning |
 
 From the third Tuesday on, letting everything happen too early just loops, and the night says what's missing.

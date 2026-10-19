@@ -184,7 +184,7 @@ function endings() {
   <p>At the end of a day where the player let all seven moments happen, the game checks these in order.</p>
   <ol>
     <li><strong>Day one</strong> always leads to the first night. ${quote(STORY.nights.first.at(-2))}</li>
-    <li><strong>${esc(withoutKnowing.name)}.</strong> On the second Tuesday, if Nell changed nothing and learned nothing, the loop ends here. She never finds out why, she gets up anyway, and the epilogue jumps ten years later to Dot's Diner. This is the only way to see the epilogue.</li>
+    <li><strong>${esc(withoutKnowing.name)}.</strong> Once the player has found ${esc(knowing.name)} and restarted, on the second Tuesday, if Nell changes nothing and learns nothing, the loop ends here. On a first run the same day just loops with ${quote(STORY.nights.tooSoon.noFacts[1])} She never finds out why, she gets up anyway, and the epilogue jumps ten years later to Dot's Diner. This is the only way to see the epilogue.</li>
     <li><strong>${esc(knowing.name)}.</strong> If Nell has made ${FIXES_NEEDED} different fixes and knows why Maya never told her, the day is told honestly and the loop ends. The night the way out opens, the game says ${quote(STORY.thinner)} On a ready day, watching the bus leave from the tower at 8:40 ends it the same way.</li>
     <li>Otherwise the day loops, and the night says what's missing:
       <ul>
