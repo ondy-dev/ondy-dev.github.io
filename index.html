@@ -10,41 +10,55 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body id="top">
   <a class="skip" href="#main">Skip to content</a>
 
   <div class="wrap">
     <header class="top">
-      <span class="name">Andy Tran</span>
+      <a class="name" href="#top">Andy Tran</a>
       <nav aria-label="Sections">
-        <a href="#work">Work</a>
-        <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
+        <ul>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
       </nav>
     </header>
 
     <main id="main">
       <section class="intro" aria-labelledby="intro-h">
         <h1 id="intro-h">I'm interested in the space between people and technology.</h1>
-        <p>I work across product design, code, image, sound and emerging technology to make experiences people actually want to interact with. Right now that means designing and building Pathwise IQ, an apprenticeship platform at CareerWise USA, and running the visual identity of Asian Unity at CU Boulder.</p>
-        <p>I combine product and interaction design, AI-assisted prototyping, front-end implementation, visual media and sound to make human-centered digital and live experiences.</p>
-        <p class="meta">CU Boulder · B.S. Creative Technology &amp; Design + Music Technology · expected May 2028 · Boulder, CO<br>Looking for Summer 2027 creative technologist, design engineer and product design internships.</p>
+        <p>I work across product design, code, image, sound and emerging technology to make experiences people actually want to interact with. I combine product and interaction design, AI-assisted prototyping, front-end implementation, visual media and sound to make human-centered digital and live experiences.</p>
+        <p class="now"><strong>Now</strong> Designing and building Pathwise IQ, an apprenticeship platform at CareerWise USA. Running the visual identity of Asian Unity at CU Boulder. Looking for Summer 2027 creative technologist, design engineer and product design internships.</p>
+        <p class="meta">CU Boulder · B.S. Creative Technology &amp; Design + Music Technology · expected May 2028 · Boulder, CO</p>
       </section>
+
+      <nav class="index" aria-labelledby="index-h">
+        <h2 id="index-h">Work, one tap each</h2>
+        <ol>
+          <li><a href="#job-posting"><span class="n">01</span><span class="t">Job posting page</span><span class="d">What an applicant sees for one posting. Phone first, 16 states, print view.</span></a></li>
+          <li><a href="#tasks"><span class="n">02</span><span class="t">Tasks and notifications</span><span class="d">How a supervisor's tasks look and behave across the product.</span></a></li>
+          <li><a href="#course-replacement"><span class="n">03</span><span class="t">Course replacement</span><span class="d">Swapping a required course without breaking the hour math.</span></a></li>
+          <li><a href="#design-system"><span class="n">04</span><span class="t">Design system to code</span><span class="d">Tokens, guidelines and the tooling that keeps prototypes honest.</span></a></li>
+          <li><a href="#projects"><span class="n">+</span><span class="t">Projects</span><span class="d">Asian Unity, a 3D short, DJ and event audio, an AI assessment chatbot, a job-search app.</span></a></li>
+        </ol>
+      </nav>
 
       <section class="block" id="work" aria-labelledby="work-h">
         <h2 id="work-h">Work <span class="count">Pathwise IQ, CareerWise USA, 2025 to now</span></h2>
         <p class="lede">Pathwise IQ is a new apprenticeship-management product, planned as a white-label platform. Supervisors, apprentices, schools and employers all use it. These are the pieces I owned end to end, from requirements to a clickable prototype to front-end code. Every screenshot is a prototype with fictional demo data.</p>
 
-        <!-- 1. Job posting page -->
-        <article class="study" aria-labelledby="jp-h">
+        <!-- 01 Job posting page -->
+        <article class="study" id="job-posting" aria-labelledby="jp-h">
           <header>
             <p class="kicker">Case study 01 · Oct 2026 · ticket NSP-97</p>
-            <h3 id="jp-h">The job posting page, for a 16-year-old on a phone</h3>
+            <h3 id="jp-h"><a href="#job-posting">The job posting page, for a 16-year-old on a phone</a></h3>
             <p class="summary">What an applicant sees for one job posting, from landing on it to pressing Apply. Often a high school junior reading in a short window, sometimes an English-language learner, almost always on a phone.</p>
+            <p class="role"><strong>Role:</strong> I owned the design plan, the research and the prototype. The product lead set requirements and reviewed each iteration; the seven review passes were AI reviewers I briefed; engineering ports the result into the product.</p>
           </header>
           <div class="cols">
             <div>
-              <h4>The problem</h4>
+              <h4>Problem</h4>
               <p>The existing posting page buried the two-step application note inside the job description, put every fact in a long sidebar, and had no answer for what happens after you apply, or when a job closes, pauses, or changes while your application is pending. The kickoff added new states and loosened "required" fields, so engineering and design were working from different lists.</p>
               <h4>What I did</h4>
               <ul>
@@ -52,17 +66,13 @@
                 <li>Ran a half-day of competitive research against Handshake, LinkedIn, Indeed, USAJobs, Airbnb and the apprenticeship.gov finder, one column per layout question.</li>
                 <li>Built the page as a self-contained HTML prototype on the Pathwise stylebook tokens, with five test postings and every page state switchable from a control bar.</li>
                 <li>Put iteration one through seven independent review lenses (the 16-year-old reader, UX and IA, visual design, accessibility, product purpose, copy, implementation fit) and synthesized them into one set of changes.</li>
-                <li>Iteration two: pay became the largest thing on the page, every fact is stated once, sections only render when they add something, "How to apply" collapsed to a single line that expands, and the state model grew to 16 with the student's own news (interview, offer, hired) outranking a closed job. The longest posting went from about seven phone screens to about four.</li>
+                <li>Kept the copy free of system nouns: "in person" not "on-site", "vaccines" not "immunizations", "Lasts 3 years" not "commitment". Empty sections disappear, but pay says "Pay not listed", because its absence matters.</li>
+                <li>Made print a real deliverable: counselors print postings, so every list is open and links print their URLs.</li>
               </ul>
             </div>
             <div class="side">
-              <h4>Decisions I'd defend</h4>
-              <ul>
-                <li>Empty sections disappear, but pay says "Pay not listed", because its absence matters.</li>
-                <li>No system nouns in applicant copy: "in person" not "on-site", "vaccines" not "immunizations", "Lasts 3 years" not "commitment".</li>
-                <li>When there is nothing to do (closed, not eligible, already applied), the sticky bar, the checklist and the spots count all go away.</li>
-                <li>Print is a real deliverable: counselors print postings, so every list is open and links print their URLs.</li>
-              </ul>
+              <h4>Result</h4>
+              <p>Iteration two: pay is the largest thing on the page, every fact is stated once, sections render only when they add something, and "How to apply" collapsed to one line that expands. The state model grew from 13 to 16, with the student's own news (interview, offer, hired) outranking a closed job, and when there is nothing to do the sticky bar, checklist and spots count all go away. The longest test posting went from about seven phone screens to about four. Iteration two went to the product lead for review in mid-October 2026. <span class="todo">Andy: where it stands now (in engineering, shipped?)</span></p>
               <h4>Tools</h4>
               <p class="tools">Figma · React + TypeScript prototype · Pathwise design tokens · Claude Code for scaffolding the prototype and running the seven review passes · headless Chrome for state galleries</p>
             </div>
@@ -70,45 +80,48 @@
           <div class="shots">
             <figure>
               <a href="assets/job-posting-phone.png"><img class="phone" src="assets/job-posting-phone.png" width="520" height="1400" alt="Phone view of the job posting prototype. A Machinist Apprentice posting with pay of $18 to $22 an hour as the largest text in a Quick facts card, above a sticky Apply bar." loading="lazy"></a>
-              <figcaption>Iteration two on a phone. Pay leads the Quick facts, and the bar holds only Apply and Favorite.</figcaption>
-            </figure>
-            <figure>
-              <a href="assets/job-posting-desktop.png"><img src="assets/job-posting-desktop.png" width="1400" height="972" alt="Desktop view of the same posting with a sticky action card on the right listing pay, start date, close date, the Apply button and a checklist of what you still need." loading="lazy"></a>
-              <figcaption>Desktop keeps the same order and moves the action into a sticky card.</figcaption>
-            </figure>
-            <figure class="wide tall">
-              <a href="assets/job-posting-states.png"><img src="assets/job-posting-states.png" width="640" height="1600" alt="Gallery of all 16 page states for one posting: deleted, closed, paused, not eligible, hired, offer, interview, applied with company site unfinished, applied, waiting to send, draft, not selected, withdrawn, profile pending, profile incomplete and open." loading="lazy"></a>
-              <figcaption>All 16 states rendered from one posting. Each is one banner plus one main button, picked by priority.</figcaption>
+              <figcaption>Iteration two on a phone, inside the prototype's control frame. Pay leads the Quick facts, and the bottom bar holds only Apply and Favorite.</figcaption>
             </figure>
           </div>
+          <details class="more">
+            <summary>More screens: desktop layout and the 16-state gallery</summary>
+            <div class="shots">
+              <figure>
+                <a href="assets/job-posting-desktop.png"><img src="assets/job-posting-desktop.png" width="1400" height="972" alt="Desktop view of the same posting with a sticky action card on the right listing pay, start date, close date, the Apply button and a checklist of what you still need." loading="lazy"></a>
+                <figcaption>Desktop keeps the same order and moves the action into a sticky card on the right.</figcaption>
+              </figure>
+              <figure class="wide">
+                <a href="assets/job-posting-states.png"><img src="assets/job-posting-states.png" width="640" height="1600" alt="Gallery of all 16 page states for one posting: deleted, closed, paused, not eligible, hired, offer, interview, applied with company site unfinished, applied, waiting to send, draft, not selected, withdrawn, profile pending, profile incomplete and open." loading="lazy"></a>
+                <figcaption>All 16 states rendered from one posting, numbered in priority order. Each is one banner plus one main button.</figcaption>
+              </figure>
+            </div>
+          </details>
         </article>
 
-        <!-- 2. Tasks and notifications -->
-        <article class="study" aria-labelledby="tasks-h">
+        <!-- 02 Tasks and notifications -->
+        <article class="study" id="tasks" aria-labelledby="tasks-h">
           <header>
             <p class="kicker">Case study 02 · 2025 to 2026</p>
-            <h3 id="tasks-h">Tasks and notifications for supervisors</h3>
+            <h3 id="tasks-h"><a href="#tasks">Tasks and notifications for supervisors</a></h3>
             <p class="summary">A supervisor with a dozen apprentices needs to know what is overdue, what is due this week, and why the system is asking. I owned how tasks look and behave across the product: the dashboard rail, the cards, the tags, the detail panel, the full My Tasks page, and the filtering and sort logic behind them.</p>
+            <p class="role"><strong>Role:</strong> Mine from requirements to the prototype aligned with the product repo. Engineering owns the production build. <span class="todo">Andy: adjust if the split was different</span></p>
           </header>
           <div class="cols">
             <div>
-              <h4>The problem</h4>
+              <h4>Problem</h4>
               <p>Supervisors get tasks from several places: check-ins, evaluations due, Related Training Instruction to approve, training plans to update, apprentices flagged at risk. The same task has to read the same way on the dashboard, in the detail panel and on the full page. <span class="todo">Andy: one sentence on what was wrong with tasks before this work</span></p>
               <h4>What I did</h4>
               <ul>
                 <li>Defined one task anatomy used everywhere: status pill, due date with lateness, title, the apprentice it is about, a "why this task" line, and one primary action that matches the task type.</li>
-                <li>Designed the dashboard rail as a slim summary (overdue first, then coming up) and the full page as a queue with search, "due soonest" sort, filters, and grouping into Overdue, Coming up, Snoozed and Done.</li>
+                <li>Designed the dashboard rail as a slim summary (overdue first, then coming up, four tasks and a count) and the full page as a queue with search, "due soonest" sort, filters, and grouping into Overdue, Coming up, Snoozed and Done.</li>
                 <li>Worked through the interaction states: snooze with a return date, mark complete and undo, overdue styling that stays readable, and an empty state that says what happens next.</li>
-                <li>Iterated from a card-heavy first pass (left below) to the quieter rows the team approved, then rebuilt the prototype on the repo's real CSS and markup so engineering could lift it directly.</li>
+                <li>Kept status out of color alone: every pill has a word, overdue adds a date, and "why this task" is a sentence rather than an icon.</li>
+                <li>Iterated from a card-heavy first pass to the quieter rows the team approved, then rebuilt the prototype on the repo's real CSS and markup so engineering could lift it directly.</li>
               </ul>
             </div>
             <div class="side">
-              <h4>Decisions I'd defend</h4>
-              <ul>
-                <li>"Why this task" is a sentence, not an icon. Supervisors act faster when the reason is in plain words.</li>
-                <li>Status is never color alone. Every pill has a word, and overdue adds a date.</li>
-                <li>The dashboard shows four tasks and a count, not the whole queue. The page is one click away.</li>
-              </ul>
+              <h4>Result</h4>
+              <p>The team approved the tasks prototype, and it became the reference for the app chrome and card style on later pages, including the job posting page. The aligned version runs on the repo's own tokens, component CSS and markup; a server-side render of the real React components matched the prototype's class lists for every Tasks page state. <span class="todo">Andy: where it stands in the product now</span></p>
               <h4>Tools</h4>
               <p class="tools">Figma and Figma MCP · Cursor and Claude for structured prompt-to-wireframe passes · HTML prototypes · React component CSS from the product repo</p>
             </div>
@@ -116,91 +129,96 @@
           <div class="shots">
             <figure class="wide">
               <a href="assets/tasks-page-desktop.png"><img src="assets/tasks-page-desktop.png" width="1037" height="1440" alt="My Tasks page prototype. A summary card with seven open tasks and a due-date breakdown, then a task queue grouped into Overdue and Coming up, with a detail panel on the right showing an overdue competency evaluation and its activity history." loading="lazy"></a>
-              <figcaption>The My Tasks page: summary, queue, and a docked detail panel.</figcaption>
-            </figure>
-            <figure>
-              <a href="assets/tasks-cards-early.png"><img class="phone" src="assets/tasks-cards-early.png" width="356" height="803" alt="Early card exploration for the tasks rail: three stacked cards with status pills, due dates, apprentice avatars and action buttons." loading="lazy"></a>
-              <figcaption>An early card direction. Too loud, but it settled the anatomy.</figcaption>
-            </figure>
-            <figure>
-              <a href="assets/task-detail-overdue.png"><img src="assets/task-detail-overdue.png" width="680" height="878" alt="Task detail for an overdue training-plan task: apprentice progress bars, a why-this-task explanation, an activity timeline, and buttons to snooze, mark complete or generate a training plan." loading="lazy"></a>
-              <figcaption>The overdue detail state. Reason first, then the one action that resolves it.</figcaption>
+              <figcaption>The My Tasks page: a summary card, the queue grouped by urgency, and a docked detail panel for the selected task.</figcaption>
             </figure>
           </div>
+          <details class="more">
+            <summary>More screens: the early card direction and the overdue detail state</summary>
+            <div class="shots">
+              <figure>
+                <a href="assets/tasks-cards-early.png"><img class="phone" src="assets/tasks-cards-early.png" width="356" height="803" alt="Early card exploration for the tasks rail: three stacked cards with status pills, due dates, apprentice avatars and action buttons." loading="lazy"></a>
+                <figcaption>An early card direction for the rail. Too loud, but it settled the anatomy every later version kept.</figcaption>
+              </figure>
+              <figure>
+                <a href="assets/task-detail-overdue.png"><img src="assets/task-detail-overdue.png" width="680" height="878" alt="Task detail for an overdue training-plan task: apprentice progress bars, a why-this-task explanation, an activity timeline, and buttons to snooze, mark complete or generate a training plan." loading="lazy"></a>
+                <figcaption>The overdue detail state. The reason comes first, then the one action that resolves it.</figcaption>
+              </figure>
+            </div>
+          </details>
         </article>
 
-        <!-- 3. Course replacement -->
-        <article class="study" aria-labelledby="swap-h">
+        <!-- 03 Course replacement -->
+        <article class="study" id="course-replacement" aria-labelledby="swap-h">
           <header>
             <p class="kicker">Case study 03 · 2026</p>
-            <h3 id="swap-h">Replacing a course in a training plan</h3>
+            <h3 id="swap-h"><a href="#course-replacement">Replacing a course in a training plan</a></h3>
             <p class="summary">Every apprenticeship carries required classroom hours, called Related Training Instruction. When a course is cancelled, full, or wrong for the apprentice, a supervisor has to swap it without breaking the hour requirements. I designed that flow end to end, inside the training map.</p>
+            <p class="role"><strong>Role:</strong> I designed the course cards, their organization and filtering, and the swap flow from start to finish, as part of the training map's edit mode. <span class="todo">Andy: who else worked on the training map, and what was theirs</span></p>
           </header>
           <div class="cols">
             <div>
-              <h4>The problem</h4>
+              <h4>Problem</h4>
               <p>A replacement has to keep the level's required hours, respect courses the program has locked, and stay invisible to the apprentice until the map is published. The supervisor also needs to see what else satisfies the same competency without searching a catalog. <span class="todo">Andy: one sentence on how course edits worked before, and what went wrong</span></p>
               <h4>What I did</h4>
               <ul>
                 <li>Put course editing inside the training map's edit mode, as a side panel scoped to one level ("For Calibration and inspection · Guided Practice"), so the swap always has context.</li>
-                <li>Designed the course card: provider, hours, format, whether it is included or free, the competencies it covers, and a lock state with a reason ("Can't be removed or swapped") for courses the program requires.</li>
-                <li>Designed the swap itself as a replace, not a delete-and-add: pick the course to replace, then choose from "Courses you can use instead", filtered to the same competency and level, with a recommended option first. The running total of hours against the plan's requirement updates as you choose.</li>
-                <li>Nothing changes until "Confirm changes", and nothing reaches the apprentice until the map is published. Cancel swap returns to the list with no side effects.</li>
+                <li>Designed the course card: provider, hours, format, whether it is included or free, the competencies it covers, and a lock state with its reason ("Can't be removed or swapped") for courses the program requires. Locked courses stay visible rather than disappearing.</li>
+                <li>Designed the swap as a replace, not a delete-and-add: pick the course to replace, then choose from "Courses you can use instead", already filtered to the same competency and level, with a recommended option first.</li>
+                <li>Kept the hours math on screen the whole time, so a swap cannot leave the level short. Nothing changes until "Confirm changes", and nothing reaches the apprentice until the map is published. Cancel swap returns to the list with no side effects.</li>
               </ul>
             </div>
             <div class="side">
-              <h4>Decisions I'd defend</h4>
-              <ul>
-                <li>Locked courses are shown, not hidden, with the reason in words.</li>
-                <li>The replacement list is already filtered to what fits. Finding a course should not need a search.</li>
-                <li>Hours math is on screen the whole time so a swap can't leave the level short.</li>
-              </ul>
+              <h4>Result</h4>
+              <p>The flow is built into the interactive training-map wireframe (version 5) alongside the rest of the edit mode, on the Pathwise design tokens, and is the version shown below. <span class="todo">Andy: where it stands now (reviewed, in engineering, shipped?)</span></p>
               <h4>Tools</h4>
               <p class="tools">Figma · interactive HTML wireframe on Pathwise design tokens · Claude for turning requirement docs into wireframe states</p>
             </div>
           </div>
           <div class="shots">
             <figure class="wide">
-              <a href="assets/course-edit-panel.png"><img src="assets/course-edit-panel.png" width="1440" height="1000" alt="Training map in edit mode with an Edit Related Training Instruction side panel. Two course cards: one locked with the note can't be removed or swapped, one with Swap and Remove buttons. A footer shows two courses, 32 hours on this level, and Confirm changes." loading="lazy"></a>
-              <figcaption>Editing a level's courses. The locked course stays visible with its reason.</figcaption>
-            </figure>
-            <figure class="wide">
               <a href="assets/course-swap-panel.png"><img src="assets/course-swap-panel.png" width="1440" height="1000" alt="The Swap a course panel listing five courses you can use instead, filtered to the same competency and level, with a recommended guided practice lab first and a Use this course button on each." loading="lazy"></a>
-              <figcaption>Swapping. The list is pre-filtered to the same competency, and the hours footer stays put.</figcaption>
-            </figure>
-            <figure class="wide">
-              <a href="assets/training-map-roster.png"><img src="assets/training-map-roster.png" width="1037" height="1440" alt="The My Apprentices roster the flow starts from: priority cards for ready to review, maps to publish, at risk and coming up, then a table of apprentices with progress bars, training map status and next step." loading="lazy"></a>
-              <figcaption>Where it starts: the supervisor's roster, with the maps that need attention first.</figcaption>
+              <figcaption>Swapping a course. The side panel lists only courses that fit the same competency and level, with the hours footer pinned underneath.</figcaption>
             </figure>
           </div>
+          <details class="more">
+            <summary>More screens: editing a level's courses, and the roster the flow starts from</summary>
+            <div class="shots">
+              <figure class="wide">
+                <a href="assets/course-edit-panel.png"><img src="assets/course-edit-panel.png" width="1440" height="1000" alt="Training map in edit mode with an Edit Related Training Instruction side panel. Two course cards: one locked with the note can't be removed or swapped, one with Swap and Remove buttons. A footer shows two courses, 32 hours on this level, and Confirm changes." loading="lazy"></a>
+                <figcaption>Editing a level's courses before a swap. The locked course stays visible with its reason; the other offers Swap and Remove.</figcaption>
+              </figure>
+              <figure class="wide">
+                <a href="assets/training-map-roster.png"><img src="assets/training-map-roster.png" width="1037" height="1440" alt="The My Apprentices roster the flow starts from: priority cards for ready to review, maps to publish, at risk and coming up, then a table of apprentices with progress bars, training map status and next step." loading="lazy"></a>
+                <figcaption>Where it starts: the supervisor's roster, with the maps that need attention surfaced first.</figcaption>
+              </figure>
+            </div>
+          </details>
         </article>
 
-        <!-- 4. Design system to code -->
-        <article class="study" aria-labelledby="ds-h">
+        <!-- 04 Design system to code -->
+        <article class="study" id="design-system" aria-labelledby="ds-h">
           <header>
             <p class="kicker">Case study 04 · ongoing</p>
-            <h3 id="ds-h">Keeping the design system and the code the same thing</h3>
+            <h3 id="ds-h"><a href="#design-system">Keeping the design system and the code the same thing</a></h3>
             <p class="summary">Pathwise IQ ships to partners under their own brands, so the design system has to be a token system first. I work on both sides of it: the tokens and guidelines designers use in Figma, and the CSS and components engineers build from.</p>
+            <p class="role"><strong>Role:</strong> I maintain the stylebook (tokens, guideline docs, alignment tooling) and implement the Figma design system as front-end components. <span class="todo">Andy: confirm how much of the token architecture you authored versus inherited</span></p>
           </header>
           <div class="cols">
             <div>
-              <h4>The problem</h4>
+              <h4>Problem</h4>
               <p>Prototypes drift. A mockup built with a hand-picked blue looks right in review and then has to be rebuilt on the real components, where it looks different. Designers and engineers end up arguing about which version is the design.</p>
               <h4>What I did</h4>
               <ul>
-                <li>Two-layer tokens (primitives to semantics) exported for Tokens Studio in Figma and as CSS custom properties, with a separate brand file so a white-label partner overrides one file and nothing else. <span class="todo">Andy: confirm how much of the token architecture you authored versus inherited</span></li>
+                <li>Two-layer tokens (primitives to semantics) exported for Tokens Studio in Figma and as CSS custom properties, with a separate brand file so a white-label partner overrides one file and nothing else. Components reference semantic tokens only; primitives are private.</li>
                 <li>Guideline docs that engineers actually read: color pairings with measured contrast, a 14px floor for functional text, a 16px floor for inputs so iOS doesn't zoom, focus rings as outlines so they survive high-contrast mode.</li>
-                <li>A small alignment toolchain that takes a prototype and rewrites it onto the repo's tokens, component CSS and markup, then audits the result: any raw hex, undefined variable or off-catalog icon fails the build. A server-side render of the real React components diffs class lists against the prototype so "matches the repo" is checked, not claimed.</li>
+                <li>A rule for growth: a token is added only when reusing an existing one would change a decided design, and every addition records its contrast check.</li>
+                <li>A small alignment toolchain that takes a prototype and rewrites it onto the repo's tokens, component CSS and markup, then audits the result: any raw hex, undefined variable or off-catalog icon fails the build. A server-side render of the real React components diffs class lists against the prototype, so "matches the repo" is checked, not claimed.</li>
                 <li>Brand exploration for the product mark, including the leaf-in-the-counter "P" directions below.</li>
               </ul>
             </div>
             <div class="side">
-              <h4>Decisions I'd defend</h4>
-              <ul>
-                <li>Components reference semantic tokens only. Primitives are private.</li>
-                <li>A token gets added only when reuse would change a decided design. Every addition records the contrast check.</li>
-                <li>The audit fails loudly. A prototype that cheats never reaches review.</li>
-              </ul>
+              <h4>Result</h4>
+              <p>The first token version (0.1.0-alpha.3) is implemented in the dev environment and Storybook, and alpha.4 added the tokens real components had been hard-coding, each with a recorded contrast check. The alignment audit passed clean on the tasks prototype, which is the version engineering works from. <span class="todo">Andy: is the token set live in Figma via Tokens Studio, and are partners using the brand override yet?</span></p>
               <h4>Tools</h4>
               <p class="tools">Figma + Tokens Studio · JSON tokens to CSS custom properties · React + Storybook · Python and Node scripts for alignment and audit · Tabler icons</p>
             </div>
@@ -208,75 +226,103 @@
           <div class="shots">
             <figure class="wide">
               <a href="assets/dashboard-aligned.png"><img src="assets/dashboard-aligned.png" width="942" height="1440" alt="Supervisor dashboard prototype after alignment: welcome banner, My Apprentices list with at-risk apprentices flagged first and progress bars, and the My Tasks rail on the right, all on the product's real tokens." loading="lazy"></a>
-              <figcaption>The supervisor dashboard after alignment: same design, now on the repo's tokens and component CSS.</figcaption>
-            </figure>
-            <figure class="wide">
-              <a href="assets/pathwise-logo-board.png"><img src="assets/pathwise-logo-board.png" width="1400" height="542" alt="Three logo directions for PathWiseIQ on a dark board: a navy P with a leaf cut from its counter, the same with a midrib, and a version with a teal leaf, each shown as a wordmark, a button and app icons." loading="lazy"></a>
-              <figcaption>Mark exploration: the leaf lives in the counter of the P so it works at favicon size in one color. <span class="todo">Andy: confirm this board is your exploration</span></figcaption>
+              <figcaption>The supervisor dashboard after alignment: the same design, now running on the repo's tokens and component CSS.</figcaption>
             </figure>
           </div>
+          <details class="more">
+            <summary>More: the product mark exploration</summary>
+            <div class="shots">
+              <figure class="wide">
+                <a href="assets/pathwise-logo-board.png"><img src="assets/pathwise-logo-board.png" width="1400" height="542" alt="Three logo directions for PathWiseIQ on a dark board: a navy P with a leaf cut from its counter, the same with a midrib, and a version with a teal leaf, each shown as a wordmark, a button and app icons." loading="lazy"></a>
+                <figcaption>Three directions for the mark. The leaf lives in the counter of the P so it works at favicon size in one color. <span class="todo">Andy: confirm this board is your exploration</span></figcaption>
+              </figure>
+            </div>
+          </details>
         </article>
+
+        <p class="totop"><a href="#top">Back to top</a></p>
       </section>
 
       <section class="block" id="projects" aria-labelledby="proj-h">
         <h2 id="proj-h">Projects <span class="count">image, sound, motion, and one app</span></h2>
         <div class="projects">
 
-          <article class="proj" aria-labelledby="au-h">
+          <article class="proj" id="asian-unity" aria-labelledby="au-h">
             <div>
               <p class="kicker">Asian Unity at CU Boulder · Co-PR and Creative Lead · 2026 to now</p>
-              <h3 id="au-h">A campus identity that behaves like a broadcast</h3>
+              <h3 id="au-h"><a href="#asian-unity">A campus identity that behaves like a broadcast</a></h3>
               <p>I run the visual side of Asian Unity: logo, graphics, social, photo, video and motion. This year's theme is a channel. The yearly teaser flips through CRT static like someone changing channels, lands on an "incoming transmission from University of Colorado Asian Unity" message, then a music drop and the logo reveal. The same system carries the merch: "CH 48 · AUB-TV · 48 nations, one signal."</p>
               <p>In the 30 days before mid-October 2026 the account reached 140K Instagram views, 2.5K interactions and 200 new followers.</p>
               <p><span class="todo">Andy: link to the teaser video or Instagram reel</span></p>
             </div>
             <div class="pair">
-              <img class="contain" src="assets/asian-unity-wordmark.png" width="1000" height="1000" alt="Asian Unity wordmark: italic black letters with a red and purple halftone star behind, the subline 48 United, and a tri-color stripe." loading="lazy">
-              <img src="assets/asian-unity-ch48-shirt.jpg" width="900" height="1200" alt="Back design of the Asian Unity shirt on black: CH 48 and AUB-TV Asian Unity Broadcast with a Live badge, the wordmark repeated as a stuttering TV signal, and the line 48 nations, one signal." loading="lazy">
+              <figure>
+                <img class="contain" src="assets/asian-unity-wordmark.png" width="1000" height="1000" alt="Asian Unity wordmark: italic black letters with a red and purple halftone star behind, the subline 48 United, and a tri-color stripe." loading="lazy">
+                <figcaption>The wordmark.</figcaption>
+              </figure>
+              <figure>
+                <img src="assets/asian-unity-ch48-shirt.jpg" width="900" height="1200" alt="Back design of the Asian Unity shirt on black: CH 48 and AUB-TV Asian Unity Broadcast with a Live badge, the wordmark repeated as a stuttering TV signal, and the line 48 nations, one signal." loading="lazy">
+                <figcaption>Shirt back for the channel theme.</figcaption>
+              </figure>
             </div>
           </article>
 
-          <article class="proj" aria-labelledby="anim-h">
+          <article class="proj" id="animation" aria-labelledby="anim-h">
             <div>
               <p class="kicker">3D narrative animation · Blender, Figma, Premiere</p>
-              <h3 id="anim-h">A short film from storyboard to sound</h3>
-              <p>A short 3D animated piece I took from thumbnails to a finished cut: multi-camera setups, keyframed performance, cinematic framing, pixel-art textures and UV mapping, compositing, editing and sound design. The storyboard is from planning; the frame is rendered from the Blender scene.</p>
+              <h3 id="anim-h"><a href="#animation">A short film from storyboard to sound</a></h3>
+              <p>A short 3D animated piece I took from thumbnails to a finished cut: multi-camera setups, keyframed performance, cinematic framing, pixel-art textures and UV mapping, compositing, editing and sound design.</p>
               <p><span class="todo">Andy: link to the finished video, and confirm the character model is your own or credit its source</span></p>
             </div>
             <div class="pair">
-              <img src="assets/candy-cadet-frame-7.jpg" width="1280" height="720" alt="Rendered frame of a candy-vending robot character: a domed head with two antenna lights, a rainbow of candy windows across its chest, spring arms with claw hands, and tank-tread feet marked 25 cents." loading="lazy">
-              <img src="assets/candy-cadet-storyboard.png" width="1400" height="786" alt="Hand-drawn storyboard page with eight panels sketching the robot in a room, close-ups of its face, and camera notes." loading="lazy">
+              <figure>
+                <img src="assets/candy-cadet-frame-7.jpg" width="1280" height="720" alt="Rendered frame of a candy-vending robot character: a domed head with two antenna lights, a rainbow of candy windows across its chest, spring arms with claw hands, and tank-tread feet marked 25 cents." loading="lazy">
+                <figcaption>A frame rendered from the Blender scene.</figcaption>
+              </figure>
+              <figure>
+                <img src="assets/candy-cadet-storyboard.png" width="1400" height="786" alt="Hand-drawn storyboard page with eight panels sketching the robot in a room, close-ups of its face, and camera notes." loading="lazy">
+                <figcaption>The storyboard from planning.</figcaption>
+              </figure>
             </div>
           </article>
 
-          <article class="proj" aria-labelledby="dj-h">
+          <article class="proj" id="dj" aria-labelledby="dj-h">
             <div>
               <p class="kicker">ONDY · DJ and event audio · ongoing</p>
-              <h3 id="dj-h">Reading a room in real time</h3>
+              <h3 id="dj-h"><a href="#dj">Reading a room in real time</a></h3>
               <p>I DJ as ONDY: 30+ sets across clubs, bars, house parties and campus events, including opening slots for Slickportal and Space Wizard. I also work as an independent DJ and event-audio contractor for weddings (15+ so far): the couple consultation, ceremony and reception sound, mics, lighting, MCing, and the coordination with planners, venues and vendors on the day.</p>
               <p>It is the most direct UX work I do. You watch behavior, read the feedback, and change the experience while it is happening. I also run the brand: the wordmark, the press kit and cover art for the shows. As president of CU Rave Club I lead a 300-member music community and have run six or more pop-ups and collaborations with venues and local artists.</p>
               <p><span class="todo">Andy: link to a mix or the ONDY account</span></p>
             </div>
             <div class="pair">
-              <img class="contain" src="assets/ondy-logo.png" width="1000" height="1000" alt="ONDY wordmark in a liquid, bulbous black display face with a soft blue-grey glow." loading="lazy">
-              <img src="assets/dubwub-6-cover.jpg" width="900" height="900" alt="DUBWUB 6 cover art: a DJ seen from behind with one arm raised, rendered in a heavy halftone over a purple and magenta crowd, the letters of the title breaking through the dots." loading="lazy">
+              <figure>
+                <img class="contain" src="assets/ondy-logo.png" width="1000" height="1000" alt="ONDY wordmark in a liquid, bulbous black display face with a soft blue-grey glow." loading="lazy">
+                <figcaption>The ONDY wordmark.</figcaption>
+              </figure>
+              <figure>
+                <img src="assets/dubwub-6-cover.jpg" width="900" height="900" alt="DUBWUB 6 cover art: a DJ seen from behind with one arm raised, rendered in a heavy halftone over a purple and magenta crowd, the letters of the title breaking through the dots." loading="lazy">
+                <figcaption>Cover art for DUBWUB 6.</figcaption>
+              </figure>
             </div>
           </article>
 
-          <article class="proj" aria-labelledby="bot-h">
+          <article class="proj" id="chatbot" aria-labelledby="bot-h">
             <div>
               <p class="kicker">AI assessment chatbot · CareerWise external AI tool</p>
-              <h3 id="bot-h">Assessing apprentice progress in conversation</h3>
+              <h3 id="bot-h"><a href="#chatbot">Assessing apprentice progress in conversation</a></h3>
               <p>A conversational system that evaluates apprentice progress against a scoring rubric through structured questions, with voice input and output so people can talk to it instead of typing. I designed the chat experience and the structure of the interaction: how it opens with what needs attention, how it asks, and how it hands back a plan a supervisor can act on.</p>
-              <p>The screenshot shows the supervisor persona in the demo. <span class="todo">Andy: confirm the apprentice names in the demo are fictional</span></p>
+              <p><span class="todo">Andy: confirm the apprentice names in the demo are fictional</span></p>
             </div>
-            <img src="assets/assessment-chat.jpg" width="1200" height="1500" alt="Supervisor Chat demo: a navy assistant message summarizing which apprentice is behind pace and which task is overdue, a user asking for soft skills to work on and a small plan, and a status line reading searching knowledge base." loading="lazy">
+            <figure>
+              <img src="assets/assessment-chat.jpg" width="1200" height="1500" alt="Supervisor Chat demo: a navy assistant message summarizing which apprentice is behind pace and which task is overdue, a user asking for soft skills to work on and a small plan, and a status line reading searching knowledge base." loading="lazy">
+              <figcaption>The supervisor persona in the demo, mid-conversation.</figcaption>
+            </figure>
           </article>
 
-          <article class="proj" aria-labelledby="agajc-h">
+          <article class="proj" id="job-app" aria-labelledby="agajc-h">
             <div>
               <p class="kicker">AndyGetAJobChallenge · private web app · Oct 2026</p>
-              <h3 id="agajc-h">A job-search tool I built for myself, as a design-engineering exercise</h3>
+              <h3 id="agajc-h"><a href="#job-app">A job-search tool I built for myself, as a design-engineering exercise</a></h3>
               <p>A private app for running this internship search from my phone. React and TypeScript on Vite, Postgres with row-level security, one serverless function, and a scheduled Claude Code routine that discovers postings, scores them on skill, interest and trajectory fit, writes a brief, and tailors a resume from a JSON base. No router, no drag library, no CSS framework: the design system is one tokens file, and this page uses the same one.</p>
               <p>The part I care about is the card. Four rounds of review (a simulated user, a design critique, a recruiter and data pass, an accessibility pass) produced a spec with rules like: one question per screen, text before numbers, never show a judgment without its evidence, never dress a guess as a measurement, and honest empty states. Scores derived from a title alone get no sub-score bars. A posting nobody has read says so instead of rendering blanks.</p>
               <p>It is private because it holds my applications. The decisions in it are the point.</p>
@@ -285,17 +331,19 @@
           </article>
 
         </div>
+        <p class="totop"><a href="#top">Back to top</a></p>
       </section>
 
       <section class="block contact" id="contact" aria-labelledby="contact-h">
         <h2 id="contact-h">Contact</h2>
-        <dl>
-          <dt>Email</dt><dd><a href="mailto:o.andy.tran@gmail.com">o.andy.tran@gmail.com</a></dd>
-          <dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/an-andy-tran">linkedin.com/in/an-andy-tran</a></dd>
-          <dt>GitHub</dt><dd><a href="https://github.com/ondy-dev">github.com/ondy-dev</a></dd>
-          <dt>Reel</dt><dd><span class="todo">Andy: add a reel link</span></dd>
-          <dt>DJ</dt><dd><span class="todo">Andy: add the ONDY mix or account link</span></dd>
-        </dl>
+        <ul class="actions">
+          <li><a class="btn primary" href="mailto:o.andy.tran@gmail.com">Email me</a></li>
+          <li><a class="btn" href="https://www.linkedin.com/in/an-andy-tran">LinkedIn</a></li>
+          <li><a class="btn" href="https://github.com/ondy-dev">GitHub</a></li>
+        </ul>
+        <p class="plain">o.andy.tran@gmail.com</p>
+        <p class="pending">Reel: <span class="todo">Andy: add a reel link</span> · DJ: <span class="todo">Andy: add the ONDY mix or account link</span></p>
+        <p class="totop"><a href="#top">Back to top</a></p>
       </section>
     </main>
 
