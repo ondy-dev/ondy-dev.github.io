@@ -334,7 +334,7 @@ details.more > .cols { margin-bottom: 8px; }
 .page li { margin-bottom: 6px; }
 .page .why { font-size: 1.125rem; }
 .page .change { margin-top: 24px; }
-.pager { display: flex; justify-content: space-between; gap: 16px; margin: 40px 0 0; padding-top: 16px; border-top: 1px solid var(--line); font-size: 0.9375rem; }
+.pager { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; margin: 40px 0 0; padding-top: 16px; border-top: 1px solid var(--line); font-size: 0.9375rem; }
 .pager a { display: inline-flex; align-items: center; min-height: 44px; }
 
 .home h2.section { font-family: var(--font-display); font-stretch: condensed; font-weight: 700; font-size: 1rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin: 0 0 8px; }
@@ -358,3 +358,5 @@ details.more > .cols { margin-bottom: 8px; }
 .home .block > .sub { margin: 0 0 20px; }
 .page .card h2 { font-family: var(--font-display); font-stretch: condensed; font-weight: 700; font-size: 1.5rem; line-height: 1.15; letter-spacing: 0; text-transform: none; color: var(--ink); margin: 0; }
 .work-card .thumb { height: auto; }
+/* On a case-study page the hero is the point: show it whole. */
+.page .hero img { max-height: none; object-fit: contain; }
