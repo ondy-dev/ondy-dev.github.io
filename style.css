@@ -1,7 +1,7 @@
 /* Portfolio styles. Same tokens as the job-search app: warm paper, near-black
    ink, one red-orange accent. Figtree body, JetBrains Mono for small data,
-   condensed Archivo for display. Light only. The only script is hero.js, the
-   sound-reactive dot field behind the intro. */
+   condensed Archivo for display. Light only. Two scripts on the home page:
+   hero.js (the sound-reactive dot field) and micro.js (small interactions). */
 :root {
   --bg: #f6f3ec;
   --surface: #ffffff;
@@ -92,6 +92,7 @@ a:hover { color: var(--accent-text); text-decoration-thickness: 2px; }
   margin: 0 0 24px;
   max-width: 16ch;
 }
+.intro h1 .w { display: inline-block; }
 .intro p { max-width: var(--measure); margin: 0 0 16px; font-size: 1.125rem; }
 .intro .meta { font-size: 1.0625rem; color: var(--ink-muted); margin: 0 0 20px; }
 .intro .lede-intro { margin: 0; }
