@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A swap-not-delete flow where the hours update live · Andy Tran</title>
+  <meta name="description" content="Case study: replacing a required course inside an apprentice training plan without dropping below the hour requirement.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="wrap">
+    <header class="top">
+      <a class="name" href="../index.html">Andy Tran</a>
+      <nav aria-label="Sections">
+        <ul>
+          <li><a href="../index.html#work">Work</a></li>
+          <li><a href="../projects.html">Projects</a></li>
+          <li><a href="../assets/andy-tran-resume.pdf">Resume<span class="visually-hidden"> (PDF)</span></a></li>
+          <li><a href="../index.html#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main id="main" class="page">
+      <a class="back" href="../index.html#work">Back to work</a>
+
+      <article class="study" aria-labelledby="t">
+        <p class="kicker">Case study 03</p>
+        <h1 class="page-title" id="t">A swap-not-delete flow where the hours update live</h1>
+        <dl class="facts">
+          <div><dt>Role</dt><dd>Designed course editing and replacement end to end: cards, hierarchy, filtering, recommended replacements, the swap flow</dd></div>
+          <div><dt>Team</dt><dd>Size not recorded</dd></div>
+          <div><dt>Timeline</dt><dd>2026</dd></div>
+          <div><dt>State</dt><dd>Interactive wireframe, version 5</dd></div>
+          <div><dt>Tools</dt><dd>Figma · HTML wireframe on the product's tokens</dd></div>
+        </dl>
+        <figure class="hero">
+          <img src="../assets/course-swap-panel.png" width="490" height="922" alt="The Swap a course panel: filters for the competency and level, a list headed Courses you can use instead with a recommended guided practice lab first and a Use this course button on each, and a footer reading no changes yet, two courses, 32 hours on this level, with Cancel and Confirm changes.">
+          <figcaption>Swapping a course. The list is already filtered to the same competency and level; the hours footer stays pinned the whole time.</figcaption>
+        </figure>
+        <p class="why">I like flows where the rules stay visible. Here the hour math is on screen the whole time, a locked course tells you why it's locked instead of disappearing, and nothing happens until you confirm. It's a small flow, but it's the kind I think about most: what the screen should say so the person never has to guess.</p>
+        <h2>Problem</h2>
+        <p>Every apprenticeship carries required classroom hours. When a course is cancelled, full, or wrong for the apprentice, a supervisor has to replace it without dropping below the hour requirement, without touching courses the program has locked, and without the apprentice seeing a half-finished plan. They also need to see what else would satisfy the same competency without searching a catalog.</p>
+        <h2>What I did</h2>
+        <ul>
+          <li>Put course editing inside the training plan's edit mode, as a side panel scoped to one level, so a swap always has its context.</li>
+          <li>Designed the course card: provider, hours, format, included or free, the competencies it covers, and a lock state with its reason ("Can't be removed or swapped"). Locked courses stay visible.</li>
+          <li>Made the swap a replace, not a delete-and-add: pick the course to replace, then choose from "Courses you can use instead", already filtered to the same competency and level, with a recommended option first.</li>
+          <li>Kept the hours math on screen. Nothing changes until "Confirm changes", nothing reaches the apprentice until the plan is published, and Cancel swap returns to the list with no side effects.</li>
+        </ul>
+        <h2>Result</h2>
+        <p>The flow lives in the interactive wireframe of the training plan (version 5) with the rest of its edit mode: locked courses visible with their reason, a pre-filtered replacement list, and a running hour total against the requirement.</p>
+        <div class="shots">
+          <figure class="wide">
+            <img src="../assets/course-edit-panel.png" width="490" height="922" alt="The Edit courses panel before a swap: two course cards, one marked Locked with the note can't be removed or swapped, one with Swap and Remove buttons, and the same hours footer." loading="lazy">
+            <figcaption>Before the swap: the level's courses, the locked one still shown with its reason in words.</figcaption>
+          </figure>
+        </div>
+        <p class="change"><strong>What I'd change:</strong> run the hour math against a real catalog. The wireframe uses five sample courses, and a real one will have edge cases I haven't seen.</p>
+        <!-- Andy: update State when it moves to engineering or ships. -->
+        <nav class="pager" aria-label="Case studies"><a href="tasks.html">Previous: Tasks and notifications</a><a href="design-system.html">Next: Design system to code</a></nav>
+      </article>
+    </main>
+    <footer>
+      <p>Andy Tran · Boulder, CO · Hand-built: HTML, one stylesheet, no framework.</p>
+    </footer>
+  </div>
+</body>
+</html>

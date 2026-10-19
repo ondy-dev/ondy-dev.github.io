@@ -283,9 +283,9 @@ details.more > .cols { margin-bottom: 8px; }
 .cards { display: grid; gap: 32px; }
 .card { border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--surface); display: grid; gap: 12px; align-content: start; }
 .card .label { display: flex; justify-content: space-between; gap: 12px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-muted); margin: 0; }
-.card h3 { font-family: var(--font-display); font-stretch: condensed; font-weight: 700; font-size: 1.5rem; line-height: 1.15; margin: 0; }
-.card h3 a { text-decoration: none; }
-.card h3 a:hover { text-decoration: underline; }
+.card h2, .card h3 { font-family: var(--font-display); font-stretch: condensed; font-weight: 700; font-size: 1.5rem; line-height: 1.15; margin: 0; }
+.card h2 a, .card h3 a { text-decoration: none; }
+.card h2 a:hover, .card h3 a:hover { text-decoration: underline; }
 .card p { margin: 0; }
 .card figure { margin: 0; }
 .card img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; max-height: 48vh; object-fit: cover; object-position: top; }
@@ -322,3 +322,39 @@ details.more > .cols { margin-bottom: 8px; }
 .pair-ba figcaption strong { display: block; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
 .pair-ba img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
 @media (min-width: 720px) { .pair-ba img { max-width: 420px; } }
+
+/* Multi-page: home cards, study pages, pager */
+.page-title { font-family: var(--font-display); font-stretch: condensed; font-weight: 700; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.05; letter-spacing: -0.01em; margin: 0 0 16px; max-width: 22ch; }
+.back { display: inline-flex; align-items: center; min-height: 44px; font-family: var(--font-mono); font-size: 0.875rem; color: var(--ink-muted); text-decoration: none; }
+.back:hover { text-decoration: underline; }
+.page { padding: 24px 0 48px; }
+.page h2 { font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); margin: 28px 0 8px; }
+.page p, .page ul { max-width: var(--measure); }
+.page ul { padding-left: 1.2em; margin: 0 0 12px; }
+.page li { margin-bottom: 6px; }
+.page .why { font-size: 1.125rem; }
+.page .change { margin-top: 24px; }
+.pager { display: flex; justify-content: space-between; gap: 16px; margin: 40px 0 0; padding-top: 16px; border-top: 1px solid var(--line); font-size: 0.9375rem; }
+.pager a { display: inline-flex; align-items: center; min-height: 44px; }
+
+.home h2.section { font-family: var(--font-display); font-stretch: condensed; font-weight: 700; font-size: 1rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin: 0 0 8px; }
+.work-cards { display: grid; gap: 20px; margin: 20px 0 8px; }
+.work-card { display: grid; gap: 10px; align-content: start; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 16px; text-decoration: none; color: var(--ink); min-width: 0; }
+.work-card:hover { border-color: var(--line-strong); color: var(--ink); }
+.work-card:hover .wc-title { text-decoration: underline; }
+.work-card .thumb { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); display: block; }
+.work-card .wc-kicker { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-muted); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.work-card .wc-title { font-family: var(--font-display); font-stretch: condensed; font-weight: 700; font-size: 1.4rem; line-height: 1.15; margin: 0; }
+.work-card .wc-line { margin: 0; color: var(--ink-muted); font-size: 0.9375rem; }
+.work-card .wc-more { font-size: 0.9375rem; text-decoration: underline; }
+.seeall { margin: 16px 0 0; }
+@media (min-width: 720px) {
+  .work-cards { grid-template-columns: 1fr 1fr; }
+  .work-cards.four { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .work-cards.four .wc-title { font-size: 1.2rem; }
+}
+
+.thumb-text { display: flex; align-items: center; justify-content: center; text-align: center; font-family: var(--font-mono); font-size: 0.875rem; color: var(--ink-muted); padding: 12px; line-height: 1.5; }
+.home .block > .sub { margin: 0 0 20px; }
+.page .card h2 { font-family: var(--font-display); font-stretch: condensed; font-weight: 700; font-size: 1.5rem; line-height: 1.15; letter-spacing: 0; text-transform: none; color: var(--ink); margin: 0; }
+.work-card .thumb { height: auto; }
