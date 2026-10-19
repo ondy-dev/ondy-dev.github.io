@@ -399,7 +399,7 @@ class Terminal {
     this.endingsCounter.textContent = text;
   }
 
-  // RESTART asks first: back to the first Tuesday, or erase everything (see startGame).
+  // RESTART asks first: start the loop over, or erase everything (see startGame).
   showRestartMenu() {
     this.restartMenu.returnValue = "";
     this.restartMenu.showModal();
@@ -938,10 +938,12 @@ class Game {
     this.say(thoughts.length > 0 ? thoughts : this.story.think.nothing);
   }
 
-  // Back to the first Tuesday. Nell forgets what she learned; the endings found and the colors stay.
+  // Starts the loop over. Nell forgets what she learned and wakes on the second Tuesday: day one
+  // only shows that the day can't change, and the player has lived it. Endings and colors stay.
   restart() {
-    Progress.erase();
-    this.showTitle();
+    this.progress = new Progress({ days: 1 });
+    this.terminal.clear();
+    this.startDay(); // saves the fresh progress
   }
 
   // Everything, endings and colors too: back to "How do you feel today?"

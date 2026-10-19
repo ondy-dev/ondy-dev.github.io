@@ -110,7 +110,7 @@ const STORY = {
     continueOnPhone: "tap to continue ▾",
     yourMove: "type, or {enter} to let it pass",
 
-    playAgain: "_ Restart, up top, to go back to the first Tuesday.",
+    playAgain: "_ Restart, up top, to start the loop over.",
 
     // The counter in the bar at the top, and the line under each end card (see `endings`).
     endingsCounter: "endings {found}/{total}",
@@ -121,8 +121,8 @@ const STORY = {
     restartButton: "restart",
     restartMenu: {
       question: "Start over?",
-      restart: "Back to the first Tuesday",
-      restartNote: "Nell forgets everything she’s learned. You don’t. The endings you’ve found and your colors stay.",
+      restart: "Start the loop over",
+      restartNote: "Nell wakes up on Tuesday again and forgets everything she found out. You’ll still remember it. Your endings and colors stay.",
       erase: "Erase everything",
       eraseNote: "Endings and colors too. You’ll be asked how you feel again.",
       cancel: "Keep playing",
@@ -203,7 +203,7 @@ const STORY = {
     "Today happens the way it happened. At each moment, you can do one thing differently, or press {enter} to let it happen.",
     "Once you change something, the rest of the day goes from there.",
     "LOOK, THINK, and HELP don’t change anything.",
-    "_ RESTART takes you back to the first Tuesday. Nell forgets what she’s learned. You don’t.",
+    "_ RESTART starts the loop over. Nell forgets everything she found out. You’ll still remember it.",
   ],
 
   // THINK shows every line whose fact Nell knows, in this order.
@@ -474,7 +474,7 @@ const STORY = {
         "_ Some people let go the very next day, without ever finding out.",
         "_ a game by Andy Tran",
       ],
-      again: "_ Restart, up top, to go back to the first Tuesday. Nell forgets everything. You won’t.",
+      again: "_ Restart, up top, to start the loop over. Nell forgets everything. You’ll still remember.",
     },
 
     withoutKnowing: {
