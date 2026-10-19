@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects · Andy Tran</title>
+  <meta name="description" content="Andy Tran's projects: Tomorrow, a text game with a hand-built engine; Asian Unity's broadcast identity; a 3D short; a job-search app; DJ and event audio as ONDY; an oscilloscope music render; an AI assessment chatbot.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%23141311%27/%3E%3Ctext x=%2716%27 y=%2721%27 text-anchor=%27middle%27 font-family=%27Menlo,monospace%27 font-size=%2714%27 font-weight=%27700%27 fill=%27%23f6f3ec%27%3EAT%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="wrap">
+    <header class="top">
+      <a class="name" href="index.html">Andy Tran</a>
+      <nav aria-label="Sections">
+        <ul>
+          <li><a href="index.html#work">Work</a></li>
+          <li><a href="projects.html" aria-current="page">Projects</a></li>
+          <li><a href="assets/andy-tran-resume.pdf">Resume<span class="visually-hidden"> (PDF)</span></a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main id="main" class="page">
+      <a class="back" href="index.html">Back home</a>
+      <p class="kicker">Projects</p>
+      <h1 class="page-title">The things I make when nobody asked me to</h1>
+      <p class="why">Some of these were for class, some for a club, one was just for me. They're where I get to mix the things I care about: image, sound, motion, a bit of code, and figuring out why people connect with something.</p>
+
+      <div class="cards">
+
+        <article class="card" id="tomorrow" aria-labelledby="tmr-h">
+          <p class="label"><span>Tomorrow · text game · CU Boulder · Oct 2026</span><span class="tags"><span class="tag">Class</span><span class="tag">Shipped</span></span></p>
+          <h2 id="tmr-h"><a href="#tomorrow">A short text game about one day, regret and letting go</a></h2>
+          <figure>
+            <img src="assets/tomorrow-decision-map.png" width="820" height="1100" alt="A page of the generated decision map: the 7:14 AM moment, with each thing the player can type, what Nell learns from it, and how the day ends, laid out as a text map of every path through the game." loading="lazy">
+            <figcaption>The generated decision map: every path through the game, moment by moment. It doubles as a small data visualization.</figcaption>
+          </figure>
+          <p>You relive one Tuesday. It stops at seven moments where Nell could have done something different: one change per day, the day resets, and what she learned survives. I designed the branches backwards, the way regret works: start at the ending she'd lie awake imagining and follow each "but I couldn't have, because" one step earlier into the day. The engine is mine too: the story is data in one file, the rules are a few small classes, a script generates the decision map, and a test plays the whole game without a browser. Sixteen simulated playthroughs changed the story.</p>
+          <ul class="links"><li><a href="/tomorrow/">Play it</a></li></ul>
+        </article>
+
+        <article class="card" id="asian-unity" aria-labelledby="au-h">
+          <p class="label"><span>Asian Unity at CU Boulder · Co-PR and Creative Lead · 2026</span><span class="tags"><span class="tag">Club</span><span class="tag">Shipped</span></span></p>
+          <h2 id="au-h"><a href="#asian-unity">A campus identity that behaves like a broadcast</a></h2>
+          <figure>
+            <img src="assets/asian-unity-ch48-shirt.jpg" width="900" height="1200" alt="Back design of the Asian Unity shirt on black: CH 48 and AUB-TV Asian Unity Broadcast with a Live badge, the wordmark repeated as a stuttering TV signal, and the line 48 nations, one signal." loading="lazy">
+            <figcaption>Shirt back for the channel theme.</figcaption>
+          </figure>
+          <p>I run the visual side of Asian Unity with my co-PR: logo, graphics, social, photo, video and motion. This year's theme is Y2K Tokyo pop, and the teaser is the piece I'd show first if you asked me what my degree is about. It flips through CRT static like someone changing channels, lands on an "incoming transmission" message, then a music drop and the logo reveal. In one 30-day period the account reached 140K Instagram views, 2.5K interactions and 200 new followers. The photography this year is mine.</p>
+          <ul class="links">
+            <li><a href="https://www.instagram.com/p/DcoSgVBxlap/">Watch the teaser</a></li>
+            <li><a href="https://www.instagram.com/p/Demi9_Zxews/">The shirts, on video</a></li>
+            <li><a href="https://www.instagram.com/p/Dd1ngzQRH3D/">The joint-meeting post with FSA</a></li>
+          </ul>
+        </article>
+
+        <article class="card" id="animation" aria-labelledby="anim-h">
+          <p class="label"><span>3D narrative animation · CU Boulder · Spring 2026</span><span class="tags"><span class="tag">Class</span><span class="tag">Shipped</span></span></p>
+          <h2 id="anim-h"><a href="#animation">A 45-second short from storyboard to sound</a></h2>
+          <figure>
+            <img src="assets/candy-cadet-frame-7.jpg" width="1280" height="720" alt="Rendered frame of a candy-vending robot character: a domed head with two antenna lights, a rainbow of candy windows across its chest, spring arms with claw hands, and tank-tread feet marked 25 cents." loading="lazy">
+            <figcaption>A frame rendered from the Blender scene.</figcaption>
+          </figure>
+          <p>A Five Nights at Freddy's-inspired piece for an image class: camcorder and surveillance points of view, keyframed animatronic performance, UV-mapped TV screens, pixel art from Figma, then compositing and sound design in Premiere. It was the first time I'd taken something from thumbnails all the way to a finished cut, and the sound design is the part I'd do again tomorrow.</p>
+          <ul class="links"><li><a href="https://www.youtube.com/watch?v=APOIXs6vpzA">Watch the short on YouTube</a></li></ul>
+        </article>
+
+        <article class="card" id="job-app" aria-labelledby="agajc-h">
+          <p class="label"><span>AndyGetAJobChallenge · private web app · Oct 2026</span><span class="tags"><span class="tag">Personal</span><span class="tag">Shipped</span></span></p>
+          <h2 id="agajc-h"><a href="#job-app">A job-search tool I built for myself</a></h2>
+          <figure>
+            <pre class="code" tabindex="0"><code>// total = Σ weight · score − penalties   (each score is 0–10)
+export function normalizeWeights(w) {
+  const sum = Object.values(w).reduce((a, b) => a + b, 0) || 1;
+  return Object.fromEntries(Object.entries(w).map(([k, v]) => [k, v / sum]));
+}
+
+/** Skill fit: how well the role and its requirements match what you already do. */
+export function scoreSkill(job, rubric) {
+  // ...
+  if (req.length) {
+    const matched = req.filter(has);
+    const reqScore = (10 * matched.length) / req.length;
+    base = cfg.roleWeight * role.skill + cfg.requirementWeight * reqScore;
+  } else {
+    // Nothing read from the posting yet: baseline only, and the card shows no sub-scores.
+    base = role.skill;
+  }
+  const penalty = Math.min(cfg.gapPenaltyMax, gaps.length * cfg.gapPenalty);
+  return { score: round1(clamp(base + bonus - penalty)), parts };
+}</code></pre>
+            <figcaption>The scoring engine, abridged. Every score carries the parts that produced it.</figcaption>
+          </figure>
+          <p>I was applying to a lot of roles, so I built the tool I wanted: React and TypeScript, Postgres with row-level security, one serverless function, and a scheduled Claude Code routine that finds postings, scores them and tailors a resume from a JSON base. Its tokens file is the one this site uses. The card's rules came out of four review rounds: text before numbers, and never a judgment without its evidence. It's private, because it holds my applications.</p>
+        </article>
+
+      </div>
+
+      <h2 class="also-h">Also</h2>
+      <ul class="also">
+        <li><span class="label-inline">ONDY · DJ and event audio · since 2023</span> I DJ as ONDY: 30+ sets, including support slots for Slickportal, and 15+ weddings as DJ, MC and audio contractor. It's the most direct version of what I like about design: you watch people, read the room, and adjust while it's happening. I'm also president of CU Rave Club, a 300-member community with 6+ events so far.</li>
+        <li><span class="label-inline">Oscilloscope music · class render · 2026</span> The audio draws the picture. Blender with osci-render, inspired by takeadaytrip. <a href="https://youtu.be/yfG3DckLyrM">Watch the render</a>.</li>
+        <li><span class="label-inline">AI assessment chatbot · CareerWise USA · 2026</span> Rubric-based conversational assessment of apprentice progress, with voice in and out. I designed the chat experience.</li>
+      </ul>
+      <p class="totop"><a href="#top">Back to top</a></p>
+    </main>
+    <footer>
+      <p>Andy Tran · Boulder, CO · Hand-built: HTML, one stylesheet, no framework.</p>
+    </footer>
+  </div>
+</body>
+</html>

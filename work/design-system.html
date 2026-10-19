@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keeping the design system and the code the same thing · Andy Tran</title>
+  <meta name="description" content="Case study: two-layer design tokens, Figma components with code counterparts, and prototypes rebuilt on the real component CSS.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%23141311%27/%3E%3Ctext x=%2716%27 y=%2721%27 text-anchor=%27middle%27 font-family=%27Menlo,monospace%27 font-size=%2714%27 font-weight=%27700%27 fill=%27%23f6f3ec%27%3EAT%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="wrap">
+    <header class="top">
+      <a class="name" href="../index.html">Andy Tran</a>
+      <nav aria-label="Sections">
+        <ul>
+          <li><a href="../index.html#work">Work</a></li>
+          <li><a href="../projects.html">Projects</a></li>
+          <li><a href="../assets/andy-tran-resume.pdf">Resume<span class="visually-hidden"> (PDF)</span></a></li>
+          <li><a href="../index.html#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main id="main" class="page">
+      <a class="back" href="../index.html#work">Back to work</a>
+
+      <article class="study" aria-labelledby="t">
+        <p class="kicker">Case study 04</p>
+        <h1 class="page-title" id="t">Keeping the design system and the code the same thing</h1>
+        <dl class="facts">
+          <div><dt>Role</dt><dd>Translate the Figma design system into front-end components, keep Storybook and the tokens current, and keep design and code consistent</dd></div>
+          <div><dt>Team</dt><dd>A brand approver signs off on brand decisions</dd></div>
+          <div><dt>Timeline</dt><dd>2026, ongoing</dd></div>
+          <div><dt>State</dt><dd>First token version implemented in the dev environment and Storybook</dd></div>
+          <div><dt>Tools</dt><dd>Figma · Storybook and Code Connect · CSS custom properties · React</dd></div>
+        </dl>
+        <figure class="hero">
+          <img src="../assets/dashboard-aligned.png" width="1000" height="722" alt="Supervisor dashboard prototype: a My Apprentices list with at-risk apprentices flagged first and progress bars, and a My Tasks rail on the right, all rendered on the product's real tokens.">
+          <figcaption>The supervisor dashboard prototype after alignment: the same design, now running on the product's tokens and component CSS.</figcaption>
+        </figure>
+        <p class="why">If I could keep only one part of my job, it'd be this one. Keeping the Figma system and the code the same thing isn't glamorous, but it's what makes everything else move faster, and it's where I've learned the most about how design decisions actually survive contact with a codebase. A UI library in Unity or Unreal has the same problem: one source of truth, or two versions of the design.</p>
+        <h2>Problem</h2>
+        <p>Prototypes drift. A mockup with a hand-picked blue looks right in review, then has to be rebuilt on the real components, where it looks different, and designers and engineers end up arguing about which version is the design.</p>
+        <h2>What I did</h2>
+        <ul>
+          <li>Worked on a two-layer token system, primitives to semantics, exported to Figma and to CSS custom properties. Components reference semantic tokens only, so a theme change touches one layer.</li>
+          <li>Wrote guideline floors engineers actually use: color pairings with measured contrast, 14px minimum for functional text, 16px for inputs so iOS doesn't zoom, focus rings as outlines so they survive high-contrast mode.</li>
+          <li>Linked icons between Figma and Storybook with Code Connect.</li>
+          <li>Rebuilt approved prototypes on the product's real component CSS and markup, with a check that fails on any raw hex or undefined variable, so "matches the product" is verified rather than claimed.</li>
+          <li>Keep Storybook and the tokens current as the design moves, which puts me between design, front end and backend: a change lands in Figma, Storybook and the CSS as one thing, so engineering builds against what was actually reviewed.</li>
+        </ul>
+        <h2>Token excerpt</h2>
+        <pre class="code" tabindex="0"><code>/* Tier 1: primitives. Private; only the semantic tier references them. */
+--p-color-neutral-0: #FFFFFF;
+--p-color-neutral-500: #64748B;
+--p-color-navy-800: #0A2E52;
+
+/* Tier 2: semantic. The only tier components use. */
+--bg-surface: var(--p-color-neutral-0);
+--bg-inverse-neutral: var(--p-color-neutral-900);
+
+/* A component never sees a hex. */
+.panel-header {
+  background: var(--bg-surface);
+  border-bottom: var(--border-width-1) solid var(--border-default);
+}</code></pre>
+        <p class="note">Abridged from the generated token block in one of the prototypes.</p>
+        <h2>Result</h2>
+        <p>The first token version is implemented in the dev environment and Storybook. The tasks prototype runs on the product's CSS and matched the real components' markup state for state.</p>
+        <p class="change"><strong>What I'd change:</strong> run the alignment check in CI instead of by hand, so nobody has to remember to.</p>
+        <nav class="pager" aria-label="Case studies"><a href="course-replacement.html">Previous: Course replacement</a><a href="../projects.html">Next: Projects</a></nav>
+      </article>
+    </main>
+    <footer>
+      <p>Andy Tran · Boulder, CO · Hand-built: HTML, one stylesheet, no framework.</p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A single posting page with 16 states · Andy Tran</title>
+  <meta name="description" content="Case study: a job posting page for an apprenticeship-management product, designed phone-first with 16 states resolved by priority.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%23141311%27/%3E%3Ctext x=%2716%27 y=%2721%27 text-anchor=%27middle%27 font-family=%27Menlo,monospace%27 font-size=%2714%27 font-weight=%27700%27 fill=%27%23f6f3ec%27%3EAT%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="wrap">
+    <header class="top">
+      <a class="name" href="../index.html">Andy Tran</a>
+      <nav aria-label="Sections">
+        <ul>
+          <li><a href="../index.html#work">Work</a></li>
+          <li><a href="../projects.html">Projects</a></li>
+          <li><a href="../assets/andy-tran-resume.pdf">Resume<span class="visually-hidden"> (PDF)</span></a></li>
+          <li><a href="../index.html#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main id="main" class="page">
+      <a class="back" href="../index.html#work">Back to work</a>
+
+      <article class="study" aria-labelledby="t">
+        <p class="kicker">Case study 01</p>
+        <h1 class="page-title" id="t">A single posting page with 16 states, resolved by priority</h1>
+        <dl class="facts">
+          <div><dt>Role</dt><dd>Primary designer: plan, research, prototype</dd></div>
+          <div><dt>Team</dt><dd>My supervisor set requirements and reviewed; engineering ports it</dd></div>
+          <div><dt>Timeline</dt><dd>Oct 8 to 14, 2026, two iterations</dd></div>
+          <div><dt>State</dt><dd>Prototype, in review</dd></div>
+          <div><dt>Tools</dt><dd>Figma · React + TypeScript, built to one HTML file · Claude Code</dd></div>
+        </dl>
+        <figure class="hero">
+          <img class="natural" src="../assets/job-posting-states.png" width="640" height="1600" alt="Gallery of all 16 page states for one posting: deleted, closed, paused, not eligible, hired, offer, interview, applied with company site unfinished, applied, waiting to send, draft, not selected, withdrawn, profile pending, profile incomplete and open.">
+          <figcaption>All 16 states from one posting, numbered in priority order. The applicant's own status always outranks the job's: "you have an offer" beats "this job closed".</figcaption>
+        </figure>
+        <p class="why">This was the first page I owned from the plan to the prototype, and I kept picturing one reader the whole time: someone who's sixteen, reading a job posting on their phone between classes, maybe in their second language. Most of the design is about not wasting their thirty seconds.</p>
+        <h2>Problem</h2>
+        <p>The old page buried the application steps inside the job description and had no answer for what happens after you apply, or what you see when a job closes, pauses or changes while your application is pending. The kickoff added new states and loosened some "required" fields, so engineering and design were working from different lists.</p>
+        <h2>What I did</h2>
+        <ul>
+          <li>Wrote the plan first: six principles, a field-by-field table of what shows when a value is missing, and a state table where the first true row wins.</li>
+          <li>Spent half a day on the job sites students already use, with one question per column: how they show missing pay, what an expired link shows, where Apply sits while you scroll.</li>
+          <li>Built the page as a self-contained HTML prototype on the product's tokens, with five test postings and every state switchable from a control bar, so a review could jump to any case in one click.</li>
+          <li>Ran seven independent reviews of the first iteration, one lens each (the teen reader, structure, visual hierarchy, accessibility, product states, copy, implementation), and merged them into one change list. The reviews and the prototype scaffolding were AI-assisted; the plan, the state model and every design call are mine.</li>
+          <li>Kept the applicant copy free of system words: "in person" instead of "on-site", "vaccines" instead of "immunizations". Empty sections disappear, but pay says "Pay not listed", because its absence matters.</li>
+          <li>Treated print as a real deliverable, because counselors print postings. Every list is open and links print their URLs.</li>
+        </ul>
+        <h2>Result</h2>
+        <p>Iteration two put pay at the top as the biggest thing on the page, stated every fact once, rendered sections only when they add something, and collapsed "How to apply" to one line that expands. The state model grew from 13 to 16, and when there's nothing to do, the sticky bar and checklist go away. The longest test posting went from about seven phone screens to about four. It went to my supervisor for review in mid-October 2026.</p>
+        <div class="shots">
+          <figure>
+            <img class="phone" src="../assets/job-posting-phone.png" width="420" height="1250" alt="Phone view of the posting: title, tags, close date and spots open, then a Quick facts card with pay as the largest text, the first paragraph of the job, and a collapsed How to apply line." loading="lazy">
+            <figcaption>Iteration two on a phone. Pay leads the Quick facts; How to apply is one line until you open it.</figcaption>
+          </figure>
+          <figure>
+            <img src="../assets/job-posting-desktop.png" width="1264" height="860" alt="Desktop view of the same posting with a sticky action card on the right holding the Apply button, Favorite, and a link to what you still need." loading="lazy">
+            <figcaption>Desktop keeps the same order and moves the action into a sticky card.</figcaption>
+          </figure>
+        </div>
+        <p class="change"><strong>What I'd change:</strong> run it with a few real students. Every review so far has been an expert or an AI lens, not a sixteen-year-old, and that's the person it's for.</p>
+        <nav class="pager" aria-label="Case studies"><span></span><a href="tasks.html">Next: Tasks and notifications</a></nav>
+      </article>
+    </main>
+    <footer>
+      <p>Andy Tran · Boulder, CO · Hand-built: HTML, one stylesheet, no framework.</p>
+    </footer>
+  </div>
+</body>
+</html>
