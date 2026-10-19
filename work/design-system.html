@@ -32,7 +32,7 @@
         <p class="kicker">Case study 04</p>
         <h1 class="page-title" id="t">Keeping the design system and the code the same thing</h1>
         <dl class="facts">
-          <div><dt>Role</dt><dd>Translate the Figma design system into front-end components and keep design and code consistent</dd></div>
+          <div><dt>Role</dt><dd>Translate the Figma design system into front-end components, keep Storybook and the tokens current, and keep design and code consistent</dd></div>
           <div><dt>Team</dt><dd>A brand approver signs off on brand decisions</dd></div>
           <div><dt>Timeline</dt><dd>2026, ongoing</dd></div>
           <div><dt>State</dt><dd>First token version implemented in the dev environment and Storybook</dd></div>
@@ -51,6 +51,7 @@
           <li>Wrote guideline floors engineers actually use: color pairings with measured contrast, 14px minimum for functional text, 16px for inputs so iOS doesn't zoom, focus rings as outlines so they survive high-contrast mode.</li>
           <li>Linked icons between Figma and Storybook with Code Connect.</li>
           <li>Rebuilt approved prototypes on the product's real component CSS and markup, with a check that fails on any raw hex or undefined variable, so "matches the product" is verified rather than claimed.</li>
+          <li>Keep Storybook and the tokens current as the design moves, which puts me between design, front end and backend: a change lands in Figma, Storybook and the CSS as one thing, so engineering builds against what was actually reviewed.</li>
         </ul>
         <h2>Token excerpt</h2>
         <pre class="code" tabindex="0"><code>/* Tier 1: primitives. Private; only the semantic tier references them. */
