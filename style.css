@@ -1,6 +1,7 @@
 /* Portfolio styles. Same tokens as the job-search app: warm paper, near-black
    ink, one red-orange accent. Figtree body, JetBrains Mono for small data,
-   condensed Archivo for display. Light only. No JavaScript on the site. */
+   condensed Archivo for display. Light only. One script, on the home page:
+   micro.js (headline arrival and the card pan). */
 :root {
   --bg: #f6f3ec;
   --surface: #ffffff;
@@ -88,6 +89,10 @@ a:hover { color: var(--accent-text); text-decoration-thickness: 2px; }
   margin: 0 0 24px;
   max-width: 16ch;
 }
+.intro h1 .w { display: inline-block; }
+/* micro.js holds the headline until the fonts are in, then animates the words; if the script never runs, the hold releases itself. */
+@keyframes show { to { opacity: 1; } }
+@media (prefers-reduced-motion: no-preference) { .js .intro h1 { opacity: 0; animation: show 0s 1.5s forwards; } }
 .intro p { max-width: var(--measure); margin: 0 0 16px; font-size: 1.125rem; }
 .intro .meta { font-size: 1.0625rem; color: var(--ink-muted); margin: 0 0 20px; }
 .intro .lede-intro { margin: 0; }
